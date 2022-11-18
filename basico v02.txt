@@ -1,0 +1,7 @@
+FECHA : 24/0872022
+
+Connectar con DB PostgreSQL
+https://ed.team/blog/como-usar-bases-de-datos-postgres-con-nodejs
+ 
+npm install pg
+const { Client } = require('pg')

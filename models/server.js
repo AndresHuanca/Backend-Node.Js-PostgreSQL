@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 
-const { dbConnection } = require('../database/config');
+const { dbConection } = require('../database/config');
 
 class Server {
 
@@ -30,7 +30,7 @@ class Server {
 
     // DB
     async conectarDB() {
-        await dbConnection();
+        await dbConection();
     }
 
     // MIddlewares es una funcion que se ejecuta antes de llamar un controlador o un modelo

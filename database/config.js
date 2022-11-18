@@ -1,19 +1,28 @@
-const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize')
 
-// funcion para conectarme a la DB
 
-const dbConnection = async() => {
-
-    try {
-        await mongoose.connect( process.env.MONGODB_CNN );
-        console.log('MongoDB Connected');
-    } catch (error) {
-        console.log(error);
-        throw new Error('Error a la hora de iniciar la base de datos');
+const db =new Sequelize('test', 'postgres', '123456*', {
+    host: 'localhost',
+    dialect: 'postgres',
+    define: {
+        timestamps: false
     }
- 
-};
+    // logging: false,
+});
+
+
+const dbConection = async () => {
+    try {
+        await db.authenticate();
+        console.log("Data Base Online")
+    
+    } catch ( error ) {
+        throw new Error( error );
+    }
+
+}
+
 
 module.exports = {
-    dbConnection
+    dbConection
 };
