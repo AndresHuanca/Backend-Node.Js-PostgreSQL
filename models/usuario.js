@@ -1,46 +1,38 @@
-const { Schema, model } = require('mongoose');
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize('sqlite::memory:');
 
-//Modelo de Uusuario
-const UsuarioSchema = Schema ({ 
+const { db } = require('../database/config');
+
+// Modelo de Uusuario
+const Usuario = sequelize.define ( 'Usuario', { 
     nombre: { 
-        type: String, 
+        type: DataTypes.STRING,
         required: [ true, 'El nombre es obligatorio'],
     },
+    password: {  
+        type: DataTypes.STRING, 
+        required: [ true, 'La contraseña es obligatorio'],
+    },
     correo: { 
-        type: String, 
+        type: DataTypes.STRING, 
         required: [ true, 'El correo es obligatorio'],
         unique: true, //correo unico
     },
-    password: {  
-        type: String, 
-        required: [ true, 'La contraseña es obligatorio'],
-    },
-    img: { 
-        type: String, 
-    },
-    rol: { 
-        type: String, 
-        required: [ true, 'El nombre es obligatorio'],
-        // enum: [ 'ADMIN_ROLE', 'USER_ROLE' ] choca con la validacion
-    },
     estado: { 
-        type: Boolean,  
+        type: DataTypes.BOOLEAN,  
         default: true
     },
-    google: { 
-        type: Boolean,  
-        default: false
-    },
+
 });
 
 //sobreescribir funcion toJSON para no enviar el password y el _vv y el _id
-UsuarioSchema.methods.toJSON = function() {
+// UsuarioSchema.methods.toJSON = function() {
 
-    const {__v, password, _id, ...usuario } = this.toObject();
-    // cambia nombre de _id a uid
-    usuario.uid = _id;
-    return usuario;
+//     const {__v, password, _id, ...usuario } = this.toObject();
+//     // cambia nombre de _id a uid
+//     usuario.uid = _id;
+//     return usuario;
 
-};
+// };
 
-module.exports = model( 'Usuario', UsuarioSchema );
+module.exports = Usuario;
