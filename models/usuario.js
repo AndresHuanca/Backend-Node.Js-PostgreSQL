@@ -5,7 +5,15 @@ const { db } = require('../database/config');
 
 // Modelo de Uusuario
 const Usuarios = db.define ( 'usuarios', { 
+    id: { 
+        
+        type: DataTypes.NUMBER,
+        primaryKey: true,
+        autoIncrement: true,
+        // required: [ true, 'El nombre es obligatorio'],
+    },
     nombre: { 
+        
         type: DataTypes.STRING,
         // required: [ true, 'El nombre es obligatorio'],
     },

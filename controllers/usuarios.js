@@ -26,33 +26,26 @@ const usuariosGet = async(req, res = response ) => {
 
 };
 
-//put - Actualizar
-const usuariosPut = async(req, res) => {
-    //para dinamico
-    const { id } = req.params;
+// post- creacion 
+const usuariosPost = async(req, res = response) => {
+    // una forma de enviar todo {google, ...resto
+    const { id, nombre, password, email, estado } = req.body;
 
-    //desustructurar
-    const { _id, password, google, correo, estado, ...resto } = req.body;
+    //creando instancia de usuario
+    const usuario = new Usuarios( { id, nombre, password, email, estado } );
 
-    if ( password ) {
-         //encriptar la contraseña
-        const salt = bcryptjs.genSaltSync();
-        resto.password = bcryptjs.hashSync( password, salt );
+    //guardar en DB
+    await usuario.save();
 
-    }
-
-    const usuario = await Usuario.findByIdAndUpdate(id, resto, {new: true} );
-
-    res.status(500).json({
-        msg: 'put API - controlador',
+    //show user create
+    res.json({
         usuario
     });
-};
 
-// post- creacion 
-const usuariosPost = async(req, res = response ) => {
+}
 
-   
+const usuariosPost01 = async(req, res = response ) => {
+
     // una forma de enviar todo {google, ...resto
     const { nombre, correo, password, rol } = req.body;
 
@@ -79,6 +72,31 @@ const usuariosPost = async(req, res = response ) => {
     });
 
 };
+
+//put - Actualizar
+const usuariosPut = async(req, res) => {
+    //para dinamico
+    const { id } = req.params;
+
+    //desustructurar
+    const { _id, password, google, correo, estado, ...resto } = req.body;
+
+    if ( password ) {
+         //encriptar la contraseña
+        const salt = bcryptjs.genSaltSync();
+        resto.password = bcryptjs.hashSync( password, salt );
+
+    }
+
+    const usuario = await Usuario.findByIdAndUpdate(id, resto, {new: true} );
+
+    res.status(500).json({
+        msg: 'put API - controlador',
+        usuario
+    });
+};
+
+
 
 //patch
 const usuariosPatch = (req, res) => {
