@@ -1,5 +1,7 @@
 iniciar ptoject de NodeJs
 Nodemon app
+password data base 123456*
+https://github.com/FaztWeb/nodejs-sequelize-restapi-postgres/blob/master/src/controllers/project.controller.js
 
 npm init -y
 npm i express dotenv (crea web server- variables de entorno)

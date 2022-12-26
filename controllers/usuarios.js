@@ -1,41 +1,27 @@
 const { response, request } = require('express');
 
 //importando modelo usuario
-const Usuario = require('../models/usuario');
+const Usuarios = require('../models/usuario');
 
 
 //importando para la encriptacion
 const bcryptjs = require('bcryptjs');
 
-//get
-const usuariosGet = async(req, res = request ) => {
 
+//get 01
+const usuariosGet = async(req, res = response ) => {
+    
     // tarea hacer una validacion si envian una letra
-    const { limite = 5, desde = 0 } = req.query;
-    const query = { estado: true };
-
-    // UNO---------------------
-    // const usuarios = await Usuario.find( query )
-    // .skip( Number( desde ))
-    // .limit( Number( limite ));
-
-    // saber el total DOS---------------
-    // const total = await Usuario.count( query );
-
-
-    //colecion de las 2 promesas dessutructradas
-    const [ total, usuarios ] = await Promise.all([
-        Usuario.countDocuments( query ),
-        Usuario.find( query )
-            .skip( Number( desde ))
-            .limit( Number( limite ))
-
-    ]);
-
-
+    //show all users
+    const usuarios= await Usuarios.findAll({
+        attributes: ['nombre', 'password', 'email', 'estado'],
+    });
+    //all users 
+    const total =  usuarios.length;
+  
     res.json({
         total,
-        usuarios
+        usuarios,
     });
 
 };

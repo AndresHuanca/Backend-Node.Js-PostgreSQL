@@ -1,21 +1,22 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
+// const sequelize = new Sequelize('sqlite::memory:');
 
 const { db } = require('../database/config');
 
 // Modelo de Uusuario
-const Usuario = sequelize.define ( 'Usuario', { 
+const Usuarios = db.define ( 'usuarios', { 
     nombre: { 
         type: DataTypes.STRING,
-        required: [ true, 'El nombre es obligatorio'],
+        // required: [ true, 'El nombre es obligatorio'],
     },
     password: {  
         type: DataTypes.STRING, 
-        required: [ true, 'La contraseña es obligatorio'],
+        
+        // required: [ true, 'La contraseña es obligatorio'],
     },
-    correo: { 
+    email: { 
         type: DataTypes.STRING, 
-        required: [ true, 'El correo es obligatorio'],
+        // required: [ true, 'El correo es obligatorio'],
         unique: true, //correo unico
     },
     estado: { 
@@ -26,13 +27,13 @@ const Usuario = sequelize.define ( 'Usuario', {
 });
 
 //sobreescribir funcion toJSON para no enviar el password y el _vv y el _id
-// UsuarioSchema.methods.toJSON = function() {
+Usuarios.toJSON = function() {
+    // en postgres es sin el methods
+    const {__v, password, _id, ...usuario } = this.toObject();
+    // cambia nombre de _id a uid
+    usuario.uid = _id;
+    return usuario;
 
-//     const {__v, password, _id, ...usuario } = this.toObject();
-//     // cambia nombre de _id a uid
-//     usuario.uid = _id;
-//     return usuario;
+};
 
-// };
-
-module.exports = Usuario;
+module.exports = Usuarios;

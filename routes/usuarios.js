@@ -15,7 +15,8 @@ const { validarCampos,
 
 } = require('../middlewares');
 
-const { usuariosGet, 
+const { 
+        usuariosGet, 
         usuariosPut, 
         usuariosPost,
         usuariosDelete,
@@ -26,14 +27,8 @@ const router = Router();
 //get
 router.get('/', usuariosGet );
 
-//put
-router.put('/:id',[
-        check( 'id', 'No es un Id  Valido' ).isMongoId(),
-        check( 'id' ).custom( existeUsuarioPorId ),
-        check( 'rol' ).custom( esRoleValido ),
-        validarCampos
-
-], usuariosPut );
+//get paginado "Falta Implementar"
+// router.get('/', usuariosGetPag );
 
 //post  - middleware segundo argumento , crear errores- crear
 router.post('/', [
@@ -47,6 +42,15 @@ router.post('/', [
         validarCampos
 
 ],usuariosPost );
+
+//put
+router.put('/:id',[
+        check( 'id', 'No es un Id  Valido' ).isMongoId(),
+        check( 'id' ).custom( existeUsuarioPorId ),
+        check( 'rol' ).custom( esRoleValido ),
+        validarCampos
+
+], usuariosPut );
 
 //delete
 router.delete('/:id', [

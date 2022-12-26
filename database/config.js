@@ -9,7 +9,7 @@ const db =new Sequelize('test', 'postgres', '123456*', {
     }
     // logging: false,
 });
-
+// Se exporta db a los modelos
 
 const dbConection = async () => {
     try {
@@ -24,5 +24,6 @@ const dbConection = async () => {
 
 
 module.exports = {
-    dbConection
+    dbConection,
+    db
 };
