@@ -4,15 +4,14 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 //importando db-validators
-const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
+const { esRoleValido, emailExiste, existeUsuarioPorId, idExiste } = require('../helpers/db-validators');
 
 
 //importando middleware
 const { validarCampos,
         validarJWT,
         esAdminRole,
-        tieneRole
-
+        tieneRole,
 } = require('../middlewares');
 
 const { 
@@ -33,11 +32,12 @@ router.get('/', usuariosGet );
 //post  - middleware segundo argumento , crear errores- crear
 router.post('/', [
         //validaciones de los argumentos enviados en post
+        check( 'id' ).custom( idExiste ),
         check( 'nombre', 'El nombre  no es valido' ).not().isEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
         check( 'password', 'El password debe ser ma de 6 letras' ).isLength( { min: 6 } ), //tamaño mino de 6
         check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
         check( 'email' ).custom( emailExiste ),
-
+        validarCampos
 ],usuariosPost );
 
 //put

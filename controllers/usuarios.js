@@ -29,10 +29,10 @@ const usuariosGet = async(req, res = response ) => {
 // post- creacion 
 const usuariosPost = async(req, res = response) => {
     // una forma de enviar todo {google, ...resto
-    const { id, nombre, password, email, estado } = req.body;
+    const {id, ...resto } = req.body;
 
     //creando instancia de usuario
-    const usuario = new Usuarios( { id, nombre, password, email, estado } );
+    const usuario = new Usuarios( { resto } );
 
     //guardar en DB
     await usuario.save();

@@ -1,7 +1,6 @@
 //importando validator de correo model
 const { validationResult } = require('express-validator');
 
-
 const validarCampos = ( req, res, next ) => {
     //isEmpty(si esta vacio)
     //validacion si vienen errores de routes
@@ -13,7 +12,6 @@ const validarCampos = ( req, res, next ) => {
     next();
 
 };
-
 
 module.exports = {
     validarCampos,

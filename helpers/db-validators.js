@@ -4,6 +4,16 @@ const Role = require('../models/role');
 //importando modelo usuario //importando modelo categoria
 const { Usuarios, Categoria, Producto } = require('../models');
 
+// ----------------------USUARIOS-----------------------------
+// Validad existencia del Id usuario
+const idExiste = async ( id = '' ) => {  
+    //verificar si el id existe
+    existeEmail = await Usuarios.findByPk(  id  );
+    if( existeEmail ) {
+        throw new Error( `El id ${ id } del usuario ingresado ya existe` );
+    }
+
+};
 
 //validar role que esta en la base de datos
 const esRoleValido = async(rol='') => {
@@ -16,9 +26,9 @@ const esRoleValido = async(rol='') => {
 
 const emailExiste = async ( email = '' ) => {  
     //verificar si el correo existe
-    existeEmail = await Usuarios.findOne( { email } );
+    existeEmail = await Usuarios.findOne( { where: {email}} );
     if( existeEmail ) {
-        throw new Error( `El correo ${ email } ya existe` );
+        throw new Error( `El email ${ email } ya existe` );
     }
 
 };
@@ -31,6 +41,7 @@ const existeUsuarioPorId= async ( id = '' ) => {
     }
 
 };
+
 // ----------------------CATEGORIA-----------------------------
 // Validaciones de BD de CATEGORIAS
 const existeCategoriaPorId = async ( id = '' ) => { 
@@ -97,5 +108,6 @@ module.exports = {
     nombreCategoriaExiste,
     nombreProductoExiste,
     existeProductoPorId,
-    coleccionesPermitidas
+    coleccionesPermitidas,
+    idExiste
 };
