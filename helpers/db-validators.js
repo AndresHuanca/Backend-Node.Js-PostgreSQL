@@ -5,12 +5,32 @@ const Role = require('../models/role');
 const { Usuarios, Categoria, Producto } = require('../models');
 
 // ----------------------USUARIOS-----------------------------
-// Validad existencia del Id usuario
+// Validad existencia del id usuario
 const idExiste = async ( id = '' ) => {  
     //verificar si el id existe
-    existeEmail = await Usuarios.findByPk(  id  );
-    if( existeEmail ) {
+    existeId = await Usuarios.findByPk(  id  );
+    if( existeId ) {
         throw new Error( `El id ${ id } del usuario ingresado ya existe` );
+    }
+
+};
+
+// Valida la existencia de email registrado
+const emailExiste = async ( email = '' ) => {  
+    //verificar si el correo existe
+    existeEmail = await Usuarios.findOne( { where: {email}} );
+    if( existeEmail ) {
+        throw new Error( `El email ${ email } ya esta registrado` );
+    }
+
+};
+
+// Valida la existencia del usuario por id
+const existeUsuarioPorId= async ( codusuario = '' ) => {  
+    //verificar si el correo existe
+    existeUsuario = await Usuarios.findByPk( codusuario );
+    if( !existeUsuario ) {
+        throw new Error( `El usuario de id ${ codusuario } no existe` );
     }
 
 };
@@ -24,23 +44,6 @@ const esRoleValido = async(rol='') => {
     }
 };
 
-const emailExiste = async ( email = '' ) => {  
-    //verificar si el correo existe
-    existeEmail = await Usuarios.findOne( { where: {email}} );
-    if( existeEmail ) {
-        throw new Error( `El email ${ email } ya existe` );
-    }
-
-};
-
-const existeUsuarioPorId= async ( id = '' ) => {  
-    //verificar si el correo existe
-    existeUsuario = await Usuarios.findById(id);
-    if( !existeUsuario ) {
-        throw new Error( `El id ${ id } no existe` );
-    }
-
-};
 
 // ----------------------CATEGORIA-----------------------------
 // Validaciones de BD de CATEGORIAS

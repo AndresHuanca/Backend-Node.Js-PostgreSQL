@@ -6,127 +6,131 @@ const Usuarios = require('../models/usuario');
 
 //importando para la encriptacion
 const bcryptjs = require('bcryptjs');
+const { existeUsuarioPorId } = require('../helpers');
 
 
 //get 01
 const usuariosGet = async(req, res = response ) => {
+    try {
+        // tarea hacer una validacion si envian una letra
+        //show all users
+        const usuarios= await Usuarios.findAll({
+            attributes: ['nombre', 'password', 'email', 'estado'],
+        });
+        //all users 
+        const total =  usuarios.length;
     
-    // tarea hacer una validacion si envian una letra
-    //show all users
-    const usuarios= await Usuarios.findAll({
-        attributes: ['nombre', 'password', 'email', 'estado'],
-    });
-    //all users 
-    const total =  usuarios.length;
-  
-    res.json({
-        total,
-        usuarios,
-    });
+        res.json({
+            total,
+            usuarios,
+        }); 
+        
+    } catch (error) {
+        
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
+    }
+
 
 };
 
 // post- creacion 
 const usuariosPost = async(req, res = response) => {
-    // una forma de enviar todo {google, ...resto
-    const {id, ...resto } = req.body;
+    try {
+        
+        // una forma de enviar todo {google, ...resto
+        const { nombre, password, email, estado } = req.body;
 
-    //creando instancia de usuario
-    const usuario = new Usuarios( { resto } );
-
-    //guardar en DB
-    await usuario.save();
-
-    //show user create
-    res.json({
-        usuario
-    });
-
-}
-
-const usuariosPost01 = async(req, res = response ) => {
-
-    // una forma de enviar todo {google, ...resto
-    const { nombre, correo, password, rol } = req.body;
-
-    //creando instancia de usuario
-    const usuario = new Usuario( { nombre, correo, password, rol } );
-
-    // //verificar si el correo existe
-    // const existeEmail =  await Usuario.findOne( { correo } );
-    // if( existeEmail ) {
-    //     return res.status( 400 ).json({
-    //         msm: 'Este correo ya esta registrado'
-    //     });
-    // }
-
-    //encriptar la contraseña
-    const salt = bcryptjs.genSaltSync();
-    usuario.password = bcryptjs.hashSync( password, salt );
-
-    //guardar en DB
-    await usuario.save();
-
-    res.json({
-        usuario
-    });
-
-};
-
-//put - Actualizar
-const usuariosPut = async(req, res) => {
-    //para dinamico
-    const { id } = req.params;
-
-    //desustructurar
-    const { _id, password, google, correo, estado, ...resto } = req.body;
-
-    if ( password ) {
-         //encriptar la contraseña
+        //creando instancia de usuario
+        const usuario = new Usuarios( { nombre, password, email, estado } );
+    
+        //encriptar la contraseña
         const salt = bcryptjs.genSaltSync();
-        resto.password = bcryptjs.hashSync( password, salt );
+        usuario.password = bcryptjs.hashSync( password, salt );
+    
+        //guardar en DB
+        await usuario.save();
+    
+        //show user create
+        res.json({
+            usuario
+        });
+        
+    } catch (error) {
+        
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
 
     }
 
-    const usuario = await Usuario.findByIdAndUpdate(id, resto, {new: true} );
+}
 
-    res.status(500).json({
-        msg: 'put API - controlador',
-        usuario
-    });
-};
+//put - Actualizar
+const usuariosPut = async(req = request, res = response) => {
+    
+    try {    
+        //para dinamico
+        const { codusuario } = req.params;
+        //desustructurar (estado no se puede cambiar)
+        const { estado, ...updates } = req.body;
 
+        // Validación de existencia de usuario
+        existeUsuarioPorId(codusuario);
 
+        // Validación de update de Id
+        if(updates.codusuario){
+            throw new Error( `No se puede modificar el id` );
+        }
 
-//patch
-const usuariosPatch = (req, res) => {
-    res.json({
-        msg: 'patch API - controlador'
-    });
+        //encriptar la contraseña
+        const salt = bcryptjs.genSaltSync();
+        updates.password = bcryptjs.hashSync( updates.password, salt );
+        
+        // Localizo usuario por Id
+        await Usuarios.update( updates, { where: { codusuario } });
+
+        res.status(500).json({
+            updates,   
+        });
+
+    } catch (error) {
+
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
+    }
 
 };
 
 //delete
 const usuariosDelete = async(req, res) => {
+    
+    try {
+        const { codusuario } = req.params;
 
-    const { id } = req.params;
+        // Validación de existencia de usuario
+        existeUsuarioPorId(codusuario);
+    
+        // borrar fisicamente
+        // await Usuarios.destroy({where: { codusuario }}, { truncate: true });
+    
+        // borrar mediante estado ="false"
+        // Localizo usuario por Id y update estado = false
+        await Usuarios.update( {estado: false }, { where: { codusuario } });
 
-    // extraer uid
-    // const uid = req.uid;
+        res.json({
+            msg: `El usuario de id ${codusuario} eliminado`,
+        });
 
-    // borrar fisicamente
-    // const usuario =  await Usuario.findByIdAndDelete( id );
+    } catch (error) {
 
-    const usuario =  await Usuario.findByIdAndUpdate( id, { estado:false } );
-
-    // muestra usuario autenticado
-    // const usuarioAuntenticado = req.usuario;
-
-    res.json({
-        usuario
-        // usuarioAuntenticado,
-        // uid
-    });
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
+        
+    }
 
 };
 
@@ -135,5 +139,4 @@ module.exports = {
     usuariosPut,
     usuariosPost,
     usuariosDelete,
-    usuariosPatch
 };

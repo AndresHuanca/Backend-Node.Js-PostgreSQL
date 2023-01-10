@@ -5,9 +5,9 @@ const { db } = require('../database/config');
 
 // Modelo de Uusuario
 const Usuarios = db.define ( 'usuarios', { 
-    id: { 
+    codusuario: { 
         
-        type: DataTypes.NUMBER,
+        type: DataTypes.STRING,
         primaryKey: true,
         autoIncrement: true,
         // required: [ true, 'El nombre es obligatorio'],
@@ -37,9 +37,9 @@ const Usuarios = db.define ( 'usuarios', {
 //sobreescribir funcion toJSON para no enviar el password y el _vv y el _id
 Usuarios.toJSON = function() {
     // en postgres es sin el methods
-    const {__v, password, _id, ...usuario } = this.toObject();
+    const { password, codusuario, ...usuario } = this.toObject();
     // cambia nombre de _id a uid
-    usuario.uid = _id;
+    usuario.uid = codusuario;
     return usuario;
 
 };

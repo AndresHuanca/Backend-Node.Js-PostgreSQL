@@ -32,8 +32,7 @@ router.get('/', usuariosGet );
 //post  - middleware segundo argumento , crear errores- crear
 router.post('/', [
         //validaciones de los argumentos enviados en post
-        check( 'id' ).custom( idExiste ),
-        check( 'nombre', 'El nombre  no es valido' ).not().isEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
+        check( 'nombre', 'El nombre  no es valido' ).notEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
         check( 'password', 'El password debe ser ma de 6 letras' ).isLength( { min: 6 } ), //tamaño mino de 6
         check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
         check( 'email' ).custom( emailExiste ),
@@ -41,27 +40,17 @@ router.post('/', [
 ],usuariosPost );
 
 //put
-router.put('/:id',[
-        check( 'id', 'No es un Id  Valido' ).isMongoId(),
-        check( 'id' ).custom( existeUsuarioPorId ),
-        check( 'rol' ).custom( esRoleValido ),
+router.put('/:codusuario',[
         validarCampos
-
 ], usuariosPut );
 
 //delete
-router.delete('/:id', [
-        validarJWT,
-        // esAdminRole,
-        tieneRole( 'ADMIN_ROLE', 'VENTAS_ROLE', 'USER_ROLE'),
-        check( 'id', 'No es un Id  Valido' ).isMongoId(),
-        check( 'id' ).custom( existeUsuarioPorId ),
+router.delete('/:codusuario', [
         validarCampos
 
 ], usuariosDelete );
 
 //patch
-router.patch('/', usuariosPatch );
-
+// router.patch('/', usuariosPatch );
 
 module.exports = router;
