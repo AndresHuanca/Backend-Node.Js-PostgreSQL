@@ -2,18 +2,19 @@ const { response, request } = require('express');
 
 //importando modelo usuario
 const Usuarios = require('../models/usuario');
+const Roles = require('../models/role');
 
 
 //importando para la encriptacion
 const bcryptjs = require('bcryptjs');
-const { existeUsuarioPorId } = require('../helpers');
-
+const { existeUsuarioPorId, esRoleValido } = require('../helpers');
 
 //get 01
 const usuariosGet = async(req, res = response ) => {
     try {
         // tarea hacer una validacion si envian una letra
         //show all users
+        // Se borra del attributes valores que no deseo mostrar
         const usuarios= await Usuarios.findAll({
             attributes: ['nombre', 'password', 'email', 'estado'],
         });
@@ -38,12 +39,30 @@ const usuariosGet = async(req, res = response ) => {
 // post- creacion 
 const usuariosPost = async(req, res = response) => {
     try {
+        // const [a] = await Usuarios.findAll(
+        //     {
+        //         include: {
+        //             model: Roles,
+        //             as: 'roless',
+        //             attributes: ['id_rol', 'rol']
+        //         }
+        //     }
+        // );  
+  
+        // const id_rol = a.dataValues.id_rol;
+        // console.log(a);
         
         // una forma de enviar todo {google, ...resto
-        const { nombre, password, email, estado } = req.body;
-
+        const { nombre, password, email, estado, rol} = req.body;
+        // Para encontrar el rol y id
+        const [existeIdRol] = await Roles.findAll({   
+            where:{ rol }
+            });
+        // para utilizar el id_rol
+        const id_rol = existeIdRol.dataValues.id_rol;
+        console.log(id_rol);    
         //creando instancia de usuario
-        const usuario = new Usuarios( { nombre, password, email, estado } );
+        const usuario = new Usuarios( { nombre, password, email, estado, id_rol} );
     
         //encriptar la contraseña
         const salt = bcryptjs.genSaltSync();
@@ -51,10 +70,10 @@ const usuariosPost = async(req, res = response) => {
     
         //guardar en DB
         await usuario.save();
-    
         //show user create
         res.json({
-            usuario
+            usuario,
+            
         });
         
     } catch (error) {
@@ -83,6 +102,15 @@ const usuariosPut = async(req = request, res = response) => {
         if(updates.codusuario){
             throw new Error( `No se puede modificar el id` );
         }
+        
+        const rol = updates.rol;
+        // Para encontrar el rol y id
+        const [existeIdRol] = await Roles.findAll({   
+            where:{ rol }
+            });
+        // para utilizar el id_rol
+        const id_rol = existeIdRol.dataValues.id_rol;
+        updates.id_rol = id_rol;
 
         //encriptar la contraseña
         const salt = bcryptjs.genSaltSync();
@@ -114,11 +142,11 @@ const usuariosDelete = async(req, res) => {
         existeUsuarioPorId(codusuario);
     
         // borrar fisicamente
-        // await Usuarios.destroy({where: { codusuario }}, { truncate: true });
+        await Usuarios.destroy({where: { codusuario }}, { truncate: true });
     
         // borrar mediante estado ="false"
         // Localizo usuario por Id y update estado = false
-        await Usuarios.update( {estado: false }, { where: { codusuario } });
+        // await Usuarios.update( {estado: false }, { where: { codusuario } });
 
         res.json({
             msg: `El usuario de id ${codusuario} eliminado`,

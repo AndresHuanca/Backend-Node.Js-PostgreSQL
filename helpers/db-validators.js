@@ -1,5 +1,5 @@
 //importando Role
-const Role = require('../models/role');
+const Roles = require('../models/role');
 
 //importando modelo usuario //importando modelo categoria
 const { Usuarios, Categoria, Producto } = require('../models');
@@ -17,12 +17,14 @@ const idExiste = async ( id = '' ) => {
 
 // Valida la existencia de email registrado
 const emailExiste = async ( email = '' ) => {  
-    //verificar si el correo existe
-    existeEmail = await Usuarios.findOne( { where: {email}} );
+
+    //verificar si el correo 
+    existeEmail = await Usuarios.findOne( { where: {email} });
+
     if( existeEmail ) {
         throw new Error( `El email ${ email } ya esta registrado` );
-    }
-
+    }       
+    
 };
 
 // Valida la existencia del usuario por id
@@ -37,13 +39,13 @@ const existeUsuarioPorId= async ( codusuario = '' ) => {
 
 //validar role que esta en la base de datos
 const esRoleValido = async(rol='') => {
-
-    const existeRol = await Role.findOne( { rol } );
+    
+    const existeRol = await Roles.findOne( { where: {rol} } );
     if ( !existeRol ) {
-            throw new Error( `El rol ${ rol } enviado no se encuantra en la DB` );
+        throw new Error( `El rol ${ rol } enviado no se encuantra en la DB` );
     }
+    return rol;
 };
-
 
 // ----------------------CATEGORIA-----------------------------
 // Validaciones de BD de CATEGORIAS

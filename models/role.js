@@ -1,14 +1,20 @@
+const { Sequelize, DataTypes } = require('sequelize');
+const { db } = require('../database/config');
+
 //debe tener el mismo nombre de la coleccion pero sin la "s"
-
-const { Schema, model } = require('mongoose');
-
-const RoleSchema = Schema({ 
-
+// Modelo de Uusuario
+const Roles = db.define ( 'roles', { 
+    id_rol: { 
+        
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        autoIncrement: true,
+    },
     rol:{
-        type: String,
-        required: [ true, 'el rol es obligatorio'],
+        type: DataTypes.STRING,
     }
-
 });
 
-module.exports = model( 'Role', RoleSchema );
+
+module.exports = Roles;

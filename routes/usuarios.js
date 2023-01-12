@@ -36,11 +36,13 @@ router.post('/', [
         check( 'password', 'El password debe ser ma de 6 letras' ).isLength( { min: 6 } ), //tamaño mino de 6
         check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
         check( 'email' ).custom( emailExiste ),
+        check( 'rol' ).custom( esRoleValido ),
         validarCampos
 ],usuariosPost );
 
 //put
 router.put('/:codusuario',[
+        check( 'rol' ).custom( esRoleValido ),
         validarCampos
 ], usuariosPut );
 
