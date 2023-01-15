@@ -16,6 +16,11 @@ const usuariosGet = async(req, res = response ) => {
         //show all users
         // Se borra del attributes valores que no deseo mostrar
         const usuarios= await Usuarios.findAll({
+            include:[{
+                model: Roles,
+                as: 'rols',
+                attributes:['rol']
+            }],
             attributes: ['nombre', 'password', 'email', 'estado'],
         });
         //all users 
@@ -39,25 +44,22 @@ const usuariosGet = async(req, res = response ) => {
 // post- creacion 
 const usuariosPost = async(req, res = response) => {
     try {
-        // const [a] = await Usuarios.findAll(
-        //     {
-        //         include: {
-        //             model: Roles,
-        //             as: 'roless',
-        //             attributes: ['id_rol', 'rol']
-        //         }
-        //     }
-        // );  
-  
-        // const id_rol = a.dataValues.id_rol;
-        // console.log(a);
         
         // una forma de enviar todo {google, ...resto
         const { nombre, password, email, estado, rol} = req.body;
-        // Para encontrar el rol y id
-        const [existeIdRol] = await Roles.findAll({   
-            where:{ rol }
-            });
+        // { Para encontrar id_rol con where
+        // const [existeIdRol] = await Roles.findAll({   
+            //     where:{ rol }
+            //     });
+        // { 
+            // Para encontrar el y id
+        const [existeIdRol]= await Usuarios.findAll({
+            include:[{
+                model: Roles,
+                as: 'rols',
+                attributes:['id_rol']
+            }],
+        });
         // para utilizar el id_rol
         const id_rol = existeIdRol.dataValues.id_rol;
         console.log(id_rol);    

@@ -2,13 +2,12 @@ const { Sequelize, DataTypes } = require('sequelize');
 // const sequelize = new Sequelize('sqlite::memory:');
 
 const { db } = require('../database/config');
-const Roles = require('./role');
 
 // Modelo de Uusuario
 const Usuarios = db.define ( 'usuarios', { 
     codusuario: { 
     
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
         primaryKey: true,
         autoIncrement: true,
     },
@@ -41,13 +40,13 @@ const Usuarios = db.define ( 'usuarios', {
     
 });
 
-//sobreescribir funcion toJSON para no enviar el password y el _vv y el _id "No funciona"
+// // sobreescribir funcion toJSON para no enviar el password y el _vv y el _id "No funciona"
 // Usuarios.toJSON = function() {
-    // en postgres es sin el methods
-    // const { password, codusuario, ...usuario } = this.toObject();
-    // cambia nombre de _id a uid
-    // usuario.uid = codusuario;
-    // return usuario;
+//     // en postgres es sin el methods
+//     const { password, codusuario, ...usuario } = this.toObject();
+//     // cambia nombre de _id a uid
+//     usuario.uid = codusuario;
+//     return usuario;
 
 // };
 
