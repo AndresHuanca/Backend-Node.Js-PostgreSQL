@@ -2,7 +2,7 @@ const { response, request } = require('express');
 const jwt = require('jsonwebtoken');
 
 //validación  para la DB
-const Usuario = require('../models/usuario'); 
+const Usuario = require('../models/usuarios'); 
 
 
 

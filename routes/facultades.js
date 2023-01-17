@@ -4,8 +4,9 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 //importando db-validators
-const { nombreProductoExiste, 
-        existeCategoriaPorId } = require('../helpers/db-validators');
+const { existeCategoriaPorId, 
+        esFacultadValido,
+        emailNoExiste} = require('../helpers/db-validators');
 
 //Middlewares 
 const { validarJWT,
@@ -13,11 +14,11 @@ const { validarJWT,
         esAdminRole} = require('../middlewares');
 
 // Import controllers
-const { crearProducto, 
+const { facultadesPost, 
         obtenerProductos, 
         obtenerProducto, 
         actualizarProducto,
-        eliminarProducto} = require('../controllers/productos');
+        eliminarProducto} = require('../controllers/facultades');
 
 const router = Router();
 
@@ -34,14 +35,11 @@ router.get( '/:id', [
 
 // Crear una categoria - privado - cualquier persona with a token validate
 router.post( '/', [
-    validarJWT,
-    check( 'nombre', 'El nombre es obligatorio' ).not().isEmpty(),
-    check( 'nombre').custom( nombreProductoExiste ),
-    check( 'categoria', 'No es un Id valido' ).isMongoId(),
-    check( 'categoria' ).custom( existeCategoriaPorId ),
+    check( 'facultad', 'La Facultad es obligatorio' ).not().isEmpty(),
+    check( 'facultad').custom( esFacultadValido ),
     validarCampos
 
-], crearProducto );
+], facultadesPost );
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre

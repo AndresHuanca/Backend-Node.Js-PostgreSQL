@@ -3,7 +3,7 @@ const { response } = require('express');
 const bcryptjs = require('bcryptjs'); 
 
 //para validar se utiliza imortar el modelo del usuario
-const Usuario = require('../models/usuario');
+const Usuario = require('../models/usuarios');
 // import de helpers
 const { generarJWT } = require('../helpers/generar-jwt');
 const { googleVerify } = require('../helpers/google-verify');

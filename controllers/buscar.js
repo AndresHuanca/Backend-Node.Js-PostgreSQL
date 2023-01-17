@@ -4,7 +4,7 @@ const { response } = require("express");
 const { ObjectId } = require('mongoose').Types;
 
 // Import models
-const { Usuario, Categoria, Producto } = require('../models');
+const { Usuarios, Categoria, Producto } = require('../models');
 
 const coleccionesPermitidas = [
     'categorias',
@@ -20,7 +20,7 @@ const buscarUsuarios = async ( termino = '', res = response ) => {
     const esMongoId = ObjectId.isValid( termino ); // en caso de que sea id valido TRUE
 
     if( esMongoId ) {
-        const usuario = await Usuario.findById( termino );
+        const usuario = await Usuarios.findById( termino );
         return res.json({
             results: ( usuario ) ? [ usuario ] : []
         });
@@ -29,7 +29,7 @@ const buscarUsuarios = async ( termino = '', res = response ) => {
     // For hacer mas sensibles las busquedas
     const regex = new RegExp( termino, 'i');
     // con el count en reemplazo de find da la cantidad
-    const usuarios =  await Usuario.find({ 
+    const usuarios =  await Usuarios.find({ 
         $or: [{ nombre: regex }, { correo: regex }],
         $and: [{ estado: true}]
     });

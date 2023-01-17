@@ -1,8 +1,8 @@
 //importando Role
-const Roles = require('../models/role');
+const Roles = require('../models/roles');
 
 //importando modelo usuario //importando modelo categoria
-const { Usuarios, Categoria, Producto } = require('../models');
+const { Usuarios, Categoria, Producto, Tipos_de_Facultades } = require('../models');
 
 // ----------------------USUARIOS-----------------------------
 // Validad existencia del id usuario
@@ -70,17 +70,29 @@ const nombreCategoriaExiste = async ( nombre = '' ) => {
 
 };
 
-//-----------------------PRODUCTO----------------------------------- 
-// Validación de Nombre unico de Productos
-const nombreProductoExiste = async ( nombre = '' ) => {  
+//-----------------------FACULTADES----------------------------------- 
+// Validación de Nombre unico de Facultades
+const esFacultadValido = async ( facultad = '' ) => {  
     // Convirtiendo a toUpperCase porque asi esta en la DB
-    nombre = nombre.toUpperCase();
+    facultad = facultad.toUpperCase();
     //verificar si el correo existe
-    const existeNombre = await Producto.findOne( { nombre } );
-    if( existeNombre ) {
-        throw new Error( `El nombre ${ nombre } ya existe` );
+    const existeFacultad = await Tipos_de_Facultades.findOne( { where: {facultad} } );
+    if( !existeFacultad ) {
+        throw new Error( `La Facultad ${ facultad } no existe en la DB` );
     }
 
+};
+
+// Valida la existencia de email registrado
+const emailNoExiste = async ( email = '' ) => {  
+
+    //verificar si el correo 
+    existeNoEmail = await Usuarios.findOne( { where: {email} });
+
+    if( !existeNoEmail ) {
+        throw new Error( `El email ${ email } del usuario no esta registrado` );
+    }       
+    
 };
 
 // Validaciones de BD de CATEGORIAS
@@ -111,8 +123,9 @@ module.exports = {
     existeUsuarioPorId,
     existeCategoriaPorId,
     nombreCategoriaExiste,
-    nombreProductoExiste,
+    esFacultadValido,
     existeProductoPorId,
     coleccionesPermitidas,
-    idExiste
+    idExiste,
+    emailNoExiste
 };

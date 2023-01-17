@@ -1,8 +1,8 @@
 const { response, request } = require('express');
 
 //importando modelo usuario
-const Usuarios = require('../models/usuario');
-const Roles = require('../models/role');
+const Usuarios = require('../models/usuarios');
+const Roles = require('../models/roles');
 
 
 //importando para la encriptacion
@@ -52,17 +52,28 @@ const usuariosPost = async(req, res = response) => {
             //     where:{ rol }
             //     });
         // { 
-            // Para encontrar el y id
+        // //--Test
+        // const user = await Usuarios.findOne( { where: {email} })
+        // if( !user.estado){
+        //     return res.status(404).json({ 
+        //         message:'Usuario / estado en false'
+        //     })
+        // }
+        // //----
+        // Para encontrar el y id enviando el rol
         const [existeIdRol]= await Usuarios.findAll({
             include:[{
                 model: Roles,
                 as: 'rols',
-                attributes:['id_rol']
-            }],
+                attributes:['id_rol'],
+                where:{rol}
+            }]
         });
         // para utilizar el id_rol
+
         const id_rol = existeIdRol.dataValues.id_rol;
-        console.log(id_rol);    
+        const a = existeIdRol.dataValues
+        console.log(a);    
         //creando instancia de usuario
         const usuario = new Usuarios( { nombre, password, email, estado, id_rol} );
     

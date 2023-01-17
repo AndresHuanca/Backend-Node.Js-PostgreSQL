@@ -1,40 +1,49 @@
 const { response } = require('express');
 
-const { Producto } = require('../models');
+const { Facultades, Usuarios, Tipos_de_Facultades } = require('../models');
 
 //POST- Create Product 
-const crearProducto = async( req, res = response ) => {
-
-    const { estado, usuario, ...body } = req.body;
-
-    // Enviar categoria en body by ID
-    // Generar la data a guardar
-
-    //  // Validacion si esta en la DB
-    // const productoDB = await Producto.findOne({ nombre: body.nombre.toUpperCase() });
-
-    // if( productoDB ) {
-    //     return res.status( 400 ).json({
-    //         msg: `La categoria ${ productoDB.nombre } existe en DB`
-    //     });
-    // }
-
-    const data = {
-        ...body,
-        categoria: body.categoria,
-        nombre: body.nombre.toUpperCase(),
-        usuario: req.usuario._id
+const facultadesPost = async( req, res = response ) => {
+    try {
+        
+        // en el body debe venir: telefono y web
+        const { telefono, web, facultad } = req.body;
     
-    };
+        // Para encontrar el y id
+        const [existeIdFacuUsuaTipo]= await Facultades.findAll({
+            include:[{
+                model: Usuarios,
+                as: 'faculties_x_users',
+                attributes:['codusuario']
+            },{
+                model: Tipos_de_Facultades,
+                as: 'types',
+                attributes:['id_tipo']
 
-    // Crear Producto
-    const producto = new Producto( data );
+            }],
+        });
+         // para utilizar los id de Usuario-TipodeFacultad
+        const codusuario = existeIdFacuUsuaTipo.dataValues.codusuario;
+        const id_tipo = existeIdFacuUsuaTipo.dataValues.id_tipo;
+        console.log(existeIdFacuUsuaTipo);
+    
+        // Crear Facultad
+        const facultades = new Facultades( {codusuario, id_tipo, telefono, web, facultad  } );
+    
+        // Guardar en DB
+        await facultades.save();
+        
+        
+        // msg
+        res.status(201).json({
+            facultades
+        });
 
-    // Guardar en DB
-    await producto.save();
-
-    // msg
-    res.status(201).json( producto );
+    } catch (error) {
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
+    }
 
 };
 
@@ -138,7 +147,7 @@ const eliminarProducto = async ( req, res ) => {
 };
 
 module.exports = {
-    crearProducto,
+    facultadesPost,
     obtenerProductos,
     obtenerProducto,
     actualizarProducto,
