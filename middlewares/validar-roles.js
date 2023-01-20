@@ -11,11 +11,12 @@ const esAdminRole = ( req = request, res = response, next ) => {
         });
     }
     // esta info ya esta en el validar-jwt y usuarios.delete
-    const { rol, nombre } = req.usuario;
-
-    if( rol!== 'ADMIN_ROLE' ) {
+    const { id_rol, nombre } = req.usuario;
+    // UUID , id_rol establecido en DB
+    if( id_rol!== '77bdb138-9c03-44dc-9edf-a615bd60143a' ) {
+        console.log(req.usuario);
         return res.status( 401 ).json({
-            msg: `${ nombre } nott es administrador not puede hacer esto`
+            msg: `${ nombre } no es administrador nott puede hacer esto`
         }); 
     }
 

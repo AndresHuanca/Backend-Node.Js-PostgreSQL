@@ -3,7 +3,7 @@ const { response } = require('express');
 const bcryptjs = require('bcryptjs'); 
 
 //para validar se utiliza imortar el modelo del usuario
-const Usuario = require('../models/usuarios');
+const Usuarios = require('../models/usuarios');
 // import de helpers
 const { generarJWT } = require('../helpers/generar-jwt');
 const { googleVerify } = require('../helpers/google-verify');
@@ -11,22 +11,22 @@ const { googleVerify } = require('../helpers/google-verify');
 // Controller Login
 const login = async( req, res = response ) => {
 
-    const { correo, password } = req.body;
+    const { email, password } = req.body;
 
     try {
 
         // Verificar si el email existe 
-        const usuario = await Usuario.findOne({ correo });
+        const usuario = await Usuarios.findOne({ where: {email} });
         if( !usuario ) {
             return res.status(400).json({ 
-                msg: 'correo invalido'
+                msg: 'Email no invalido'
             });
         }
 
         //verificar si el usuario esta activo
         if( !usuario.estado ) {
             return res.status(400).json({ 
-                msg: 'correo en estado false'
+                msg: 'Cuenta en estado false: "Hable con el administrador"'
             });
         }
         
@@ -39,7 +39,7 @@ const login = async( req, res = response ) => {
         }
         
         // Generar JWT
-        const token = await generarJWT( usuario.id );
+        const token = await generarJWT( usuario.codusuario );
 
         res.json({
             usuario,

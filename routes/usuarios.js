@@ -44,11 +44,17 @@ router.post('/', [
 //put
 router.put('/:codusuario',[
         check( 'rol' ).custom( esRoleValido ),
+        check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea ,
+        check( 'codusuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosPut );
 
 //delete
 router.delete('/:codusuario', [
+        validarJWT,
+        esAdminRole, //Para que solo el administrador elimine
+        // tieneRole('ADMIN-ROL', 'USER-ROL'),
+        check( 'codusuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosDelete );
 

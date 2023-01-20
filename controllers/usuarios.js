@@ -46,40 +46,42 @@ const usuariosPost = async(req, res = response) => {
     try {
         
         // una forma de enviar todo {google, ...resto
-        const { nombre, password, email, estado, rol} = req.body;
+        const { estado, ...resto} = req.body;
         // { Para encontrar id_rol con where
         // const [existeIdRol] = await Roles.findAll({   
             //     where:{ rol }
             //     });
         // { 
-        // //--Test
-        // const user = await Usuarios.findOne( { where: {email} })
-        // if( !user.estado){
-        //     return res.status(404).json({ 
-        //         message:'Usuario / estado en false'
-        //     })
-        // }
-        // //----
         // Para encontrar el y id enviando el rol
         const [existeIdRol]= await Usuarios.findAll({
             include:[{
                 model: Roles,
                 as: 'rols',
                 attributes:['id_rol'],
-                where:{rol}
+                where:{rol: resto.rol}
             }]
         });
-        // para utilizar el id_rol
 
+        // para utilizar el id_rol
         const id_rol = existeIdRol.dataValues.id_rol;
-        const a = existeIdRol.dataValues
-        console.log(a);    
-        //creando instancia de usuario
-        const usuario = new Usuarios( { nombre, password, email, estado, id_rol} );
-    
+        // const a = existeIdRol.dataValues : me sirve para ver los valores
+        // console.log(a);   
+        
         //encriptar la contraseña
         const salt = bcryptjs.genSaltSync();
-        usuario.password = bcryptjs.hashSync( password, salt );
+        resto.password = bcryptjs.hashSync( resto.password, salt );
+        
+        // Variables envio por defecto estado: true
+        const userNew = {
+            nombre: resto.nombre,
+            password: resto.password,
+            email: resto.email,
+            estado: true,
+            id_rol
+        };
+        
+        //creando instancia de usuario
+        const usuario = new Usuarios( userNew );
     
         //guardar en DB
         await usuario.save();
@@ -108,9 +110,14 @@ const usuariosPut = async(req = request, res = response) => {
         //desustructurar (estado no se puede cambiar)
         const { estado, ...updates } = req.body;
 
-        // Validación de existencia de usuario
-        existeUsuarioPorId(codusuario);
-
+         //--Test para ver usuarios.estado
+        // const user = await Usuarios.findOne( { where: { email: updates.email } })
+        // if( !user.estado){
+        //     return res.status(404).json({ 
+        //         message:`Usuario / estado ${user.estado}`
+        //     })
+        // }
+        // //----
         // Validación de update de Id
         if(updates.codusuario){
             throw new Error( `No se puede modificar el id` );
@@ -150,9 +157,6 @@ const usuariosDelete = async(req, res) => {
     
     try {
         const { codusuario } = req.params;
-
-        // Validación de existencia de usuario
-        existeUsuarioPorId(codusuario);
     
         // borrar fisicamente
         await Usuarios.destroy({where: { codusuario }}, { truncate: true });
@@ -160,9 +164,11 @@ const usuariosDelete = async(req, res) => {
         // borrar mediante estado ="false"
         // Localizo usuario por Id y update estado = false
         // await Usuarios.update( {estado: false }, { where: { codusuario } });
-
+        const usuarioAutenticado = req.usuario;
+        
         res.json({
             msg: `El usuario de id ${codusuario} eliminado`,
+            usuarioAutenticado
         });
 
     } catch (error) {

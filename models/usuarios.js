@@ -23,7 +23,6 @@ const Usuarios = db.define ( 'usuarios', {
     },
     email: { 
         type: DataTypes.STRING, 
-        // required: [ true, 'El correo es obligatorio'],
         unique: true, //correo unico
     },
     estado: { 
@@ -40,14 +39,15 @@ const Usuarios = db.define ( 'usuarios', {
     
 });
 
-// // sobreescribir funcion toJSON para no enviar el password y el _vv y el _id "No funciona"
-// Usuarios.toJSON = function() {
-//     // en postgres es sin el methods
-//     const { password, codusuario, ...usuario } = this.toObject();
-//     // cambia nombre de _id a uid
-//     usuario.uid = codusuario;
-//     return usuario;
+// sobreescribir funcion toJSON para no enviar el password- codusuario-id_rol
+Usuarios.prototype.toJSON = function () {
+    let values = Object.assign({}, this.get());
 
-// };
+    values.uid = values.codusuario
+    delete values.password;
+    delete values.codusuario;
+    delete values.id_rol;
+    return values;
+}
 
 module.exports = Usuarios;
