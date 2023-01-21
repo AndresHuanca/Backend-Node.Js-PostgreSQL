@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { esFacultadValido } = require('../helpers');
 
 const { Facultades, Usuarios, Tipos_de_Facultades } = require('../models');
 
@@ -7,33 +8,50 @@ const facultadesPost = async( req, res = response ) => {
     try {
         
         // en el body debe venir: telefono y web
-        const { telefono, web, facultad } = req.body;
+        const { id_facultad, codusuario, id_tipo, ...resto } = req.body;
     
+        //-----------------------Otra forma de hacer----------------(pero necesita antes tener creado 2 facultades con los tipos de facultades)
         // Para encontrar el y id
-        const [existeIdFacuUsuaTipo]= await Facultades.findAll({
-            include:[{
-                model: Usuarios,
-                as: 'faculties_x_users',
-                attributes:['codusuario']
-            },{
-                model: Tipos_de_Facultades,
-                as: 'types',
-                attributes:['id_tipo']
+        // const [existeIdFacuUsuaTipo]= await Facultades.findAll({
+        //     include:[{
+        //         model: Usuarios,
+        //         as: 'faculties_x_users',
+        //         attributes:['codusuario']
+        //     },{
+        //         model: Tipos_de_Facultades,
+        //         as: 'types',
+        //         attributes:['id_tipo']
 
-            }],
-        });
-         // para utilizar los id de Usuario-TipodeFacultad
-        const codusuario = existeIdFacuUsuaTipo.dataValues.codusuario;
-        const id_tipo = existeIdFacuUsuaTipo.dataValues.id_tipo;
-        console.log(existeIdFacuUsuaTipo);
-    
+        //     }],
+        // });
+        // para utilizar los id de Usuario-TipodeFacultad
+       // codusuario = existeIdFacuUsuaTipo.dataValues.codusuario;
+       // id_tipo = existeIdFacuUsuaTipo.dataValues.id_tipo;
+       // console.log(existeIdFacuUsuaTipo);
+        //--------------------------fin----------------------------- 
+
+        // Establesco codusuario en "a" sacando del JWT 
+        const a = req.usuario.dataValues.codusuario;
+
+        // Establesco id_tipo en "b" sacando de DB
+        const facultad = resto.facultad;
+        const existeFacultad = await Tipos_de_Facultades.findOne({where: {facultad}})
+        const b = existeFacultad.dataValues.id_tipo;
+
+        //Crear nueva facultad 
+        const facultadNew = {
+            telefono: resto.telefono,
+            web: resto.web,
+            codusuario: a,
+            id_tipo: b
+        };
+
         // Crear Facultad
-        const facultades = new Facultades( {codusuario, id_tipo, telefono, web, facultad  } );
+        const facultades = new Facultades( facultadNew );
     
         // Guardar en DB
         await facultades.save();
-        
-        
+
         // msg
         res.status(201).json({
             facultades

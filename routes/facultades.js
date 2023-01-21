@@ -35,10 +35,13 @@ router.get( '/:id', [
 
 // Crear una categoria - privado - cualquier persona with a token validate
 router.post( '/', [
-    check( 'facultad', 'La Facultad es obligatorio' ).not().isEmpty(),
+    validarJWT,
+    check( 'facultad', 'La Facultad es obligatoria' ).notEmpty(),
     check( 'facultad').custom( esFacultadValido ),
+    check( 'telefono', 'El numero de telefnono es numerico' ).isNumeric(),
+    check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
+    check( 'web', 'La web es String' ).isString(),
     validarCampos
-
 ], facultadesPost );
 
 // Actualizar - privado - cualquier persona with a token validate

@@ -6,7 +6,7 @@ const Usuarios = require('../models/usuarios');
 
 
 
-const validarJWT = async( req=re, res=response, next ) => {
+const validarJWT = async( req=request, res=response, next ) => {
     // leer de los headers
     const token = req.header('x-token');
     

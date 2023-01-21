@@ -7,7 +7,6 @@ const Roles = require('../models/roles');
 
 //importando para la encriptacion
 const bcryptjs = require('bcryptjs');
-const { existeUsuarioPorId, esRoleValido } = require('../helpers');
 
 //get 01
 const usuariosGet = async(req, res = response ) => {

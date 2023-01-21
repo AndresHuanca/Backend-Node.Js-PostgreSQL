@@ -80,7 +80,6 @@ const esFacultadValido = async ( facultad = '' ) => {
     if( !existeFacultad ) {
         throw new Error( `La Facultad ${ facultad } no existe en la DB` );
     }
-
 };
 
 // Valida la existencia de email registrado
