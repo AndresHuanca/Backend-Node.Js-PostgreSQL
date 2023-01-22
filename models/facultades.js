@@ -38,14 +38,13 @@ const Facultades = db.define ( 'facultades', {
     
 });
 
+// sobreescribir funcion toJSON para no enviar el password- codusuario-id_rol
+Facultades.prototype.toJSON = function () {
+    let values = Object.assign({}, this.get());
 
-// //sobreescribir funcion toJSON para no enviar el password y el _vv y el _id en el postman
-// ProductoSchema.methods.toJSON = function() {
-
-//     const {__v, estado, ...data } = this.toObject();
-//     data.usuario.uid = data.usuario._id;
-//     delete data.usuario._id;
-//     return data;
-
-// };
+    // delete values.id_facultad;
+    // delete values.codusuario;
+    delete values.id_tipo;
+    return values;
+}
 module.exports = Facultades;

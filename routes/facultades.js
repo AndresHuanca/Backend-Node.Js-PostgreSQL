@@ -15,16 +15,16 @@ const { validarJWT,
 
 // Import controllers
 const { facultadesPost, 
-        obtenerProductos, 
         obtenerProducto, 
         actualizarProducto,
-        eliminarProducto} = require('../controllers/facultades');
+        eliminarProducto,
+        facultadesGet} = require('../controllers/facultades');
 
 const router = Router();
 
 // {{url}}/api/productos
 // GET obtener todos los productos publico
-router.get( '/', obtenerProductos );
+router.get( '/', facultadesGet );
 
 // Obtener una categoria by id - publico
 // validar si el id existe

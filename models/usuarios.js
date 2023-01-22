@@ -43,7 +43,7 @@ const Usuarios = db.define ( 'usuarios', {
 Usuarios.prototype.toJSON = function () {
     let values = Object.assign({}, this.get());
 
-    values.uid = values.codusuario
+    values.id_usuario = values.codusuario
     delete values.password;
     delete values.codusuario;
     delete values.id_rol;

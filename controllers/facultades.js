@@ -66,24 +66,34 @@ const facultadesPost = async( req, res = response ) => {
 };
 
 // GET Display All
-const obtenerProductos = async ( req, res ) => {
+const facultadesGet = async ( req, res ) => {
 
-    const { limite = 5, desde = 0 } = req.query;
-    const query = { estado: true };
+    try {
+        // tarea hacer una validacion si envian una letra
+        //show all users
+        // Se borra del attributes valores que no deseo mostrar
+        const facultades= await Facultades.findAll({
+            include:[{
+                model: Tipos_de_Facultades,
+                as: 'types',
+                attributes:['facultad']
+            }],
+            attributes: ['telefono', 'web'],
+        });
+        //all users 
+        const total =  facultades.length;
     
-    //es como una validacion IMP 
-    const [ total, usuarios ] = await Promise.all([
-        Producto.countDocuments( query ),
-        Producto.find( query )
-            .skip( Number( desde ))
-            .limit( Number( limite ))
-
-    ]);
-
-    res.json({
-        total,
-        usuarios
-    });
+        res.json({
+            total,
+            facultades,
+        }); 
+        
+    } catch (error) {
+        
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
+    }
 };
 
 //GET Display by Id 
@@ -166,7 +176,7 @@ const eliminarProducto = async ( req, res ) => {
 
 module.exports = {
     facultadesPost,
-    obtenerProductos,
+    facultadesGet,
     obtenerProducto,
     actualizarProducto,
     eliminarProducto
