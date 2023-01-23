@@ -1,7 +1,6 @@
 const { response } = require('express');
-const { esFacultadValido } = require('../helpers');
 
-const { Facultades, Usuarios, Tipos_de_Facultades } = require('../models');
+const { Facultades, Tipos_de_Facultades } = require('../models');
 
 //POST- Create Product 
 const facultadesPost = async( req, res = response ) => {
@@ -143,26 +142,28 @@ const facultadesPut = async( req, res ) =>{
 };
 
 // DELETE - Admin Role
-const eliminarProducto = async ( req, res ) => {
+const facultadesDelete = async ( req, res ) => {
 
-    const { id } = req.params;
+    try {
+        const { id_facultad } = req.params;
+    
+        // borrar fisicamente
+        await Facultades.destroy({where: { id_facultad }}, { truncate: true });
+    
+        const usuarioAutenticado = req.usuario;
 
-    // borrar fisicamente
-    // const categoria =  await Producto.findByIdAndDelete( id );
-
-    // Validacion existeProductoPorId
-    const existeProducto = await Producto.findById( id );
-    if (!existeProducto ) {
-        res.status( 500 ).json({
-            msg: ` El Id ${ id } no existe`
+        res.json({
+            msg: `La Facultad de id ${id_facultad} eliminada`,
+            usuarioAutenticado
         });
+
+    } catch (error) {
+
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
+        
     }
-
-    const producto = await Producto.findByIdAndUpdate( id, { estado: false }, { new: true}).populate('usuario', 'nombre');
-
-    res.json({
-        producto
-    });
 
 };
 
@@ -170,5 +171,5 @@ module.exports = {
     facultadesPost,
     facultadesGet,
     facultadesPut,
-    eliminarProducto
+    facultadesDelete
 };

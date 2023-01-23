@@ -3,10 +3,9 @@ const { response } = require('express');
 const bcryptjs = require('bcryptjs'); 
 
 //para validar se utiliza imortar el modelo del usuario
-const Usuarios = require('../models/usuarios');
+const Usuarios = require('../models');
 // import de helpers
-const { generarJWT } = require('../helpers/generar-jwt');
-const { googleVerify } = require('../helpers/google-verify');
+const { generarJWT, googleVerify } = require('../helpers');
 
 // Controller Login
 const login = async( req, res = response ) => {

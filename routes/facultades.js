@@ -4,10 +4,9 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 //importando db-validators
-const { existeCategoriaPorId, 
-        esFacultadValido,
+const { esFacultadValido,
         existeFacultadPorId,
-        emailNoExiste} = require('../helpers/db-validators');
+        } = require('../helpers');
 
 //Middlewares 
 const { validarJWT,
@@ -16,9 +15,9 @@ const { validarJWT,
 
 // Import controllers
 const { facultadesPost, 
-        eliminarProducto,
         facultadesGet,
-        facultadesPut} = require('../controllers/facultades');
+        facultadesPut,
+        facultadesDelete} = require('../controllers');
 
 const router = Router();
 
@@ -55,12 +54,13 @@ router.put( '/:id_facultad', [
 
 // Delete an categoria - Admin
 // que sea un id de mongo
-router.delete( '/:id', [
+router.delete( '/:id_facultad', [
     validarJWT,
-    esAdminRole,
-    check( 'id', 'No es un Id Valido' ).isMongoId(),
+    esAdminRole, //Para que solo el administrador elimine
+    // tieneRole('ADMIN-ROL', 'USER-ROL'),    check( 'id', 'No es un Id Valido' ).isMongoId(),
+    check( 'id_facultad' ).custom(existeFacultadPorId),
     validarCampos
 
-], eliminarProducto );
+], facultadesDelete );
 
 module.exports = router;

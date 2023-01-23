@@ -1,8 +1,6 @@
-//importando Role
-const Roles = require('../models/roles');
 
 //importando modelo usuario //importando modelo categoria
-const { Usuarios, Categoria, Producto, Tipos_de_Facultades, Facultades } = require('../models');
+const { Usuarios, Roles, Tipos_de_Facultades, Facultades } = require('../models');
 
 // ----------------------USUARIOS-----------------------------
 // Validad existencia del id usuario
@@ -82,6 +80,14 @@ const esFacultadValido = async ( facultad = '' ) => {
     }
 };
 
+const existeFacultadPorId = async ( id_facultad = '' ) => { 
+    // verifficar si el id existe
+    existeFacultad = await Facultades.findOne({ where: {id_facultad} });
+    if( !existeFacultad ) {
+        throw new Error( `El id ${ id_facultad } no existe en DB`)
+        
+    }
+};
 // Valida la existencia de email registrado
 const emailNoExiste = async ( email = '' ) => {  
 
@@ -95,14 +101,6 @@ const emailNoExiste = async ( email = '' ) => {
 };
 
 // Validaciones de BD de CATEGORIAS
-const existeFacultadPorId = async ( id_facultad = '' ) => { 
-    // verifficar si el id existe
-    existeFacultad = await Facultades.findByPk(id_facultad);
-    if( !existeFacultad ) {
-        throw new Error( `El id ${ id } no existe`)
-        
-    }
-};
 
 // Validaciones de Carga de Archivos
 const coleccionesPermitidas =  (coleccion = '', colecciones = [] ) => {
