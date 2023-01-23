@@ -117,7 +117,7 @@ const usuariosPut = async(req = request, res = response) => {
         //     })
         // }
         // //----
-        // Validación de update de Id
+        // Validación de update para no modificar codusuario
         if(updates.codusuario){
             throw new Error( `No se puede modificar el id` );
         }

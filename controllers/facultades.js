@@ -96,57 +96,49 @@ const facultadesGet = async ( req, res ) => {
     }
 };
 
-//GET Display by Id 
-const obtenerProducto = async ( req, res ) => {
-
-    const { id } = req.params;
-
-    const producto = await Producto.findById( id ).populate( 'usuario', 'nombre' );
-
-    //Validacion de DB 
-    // verificar si el id existe
-    const existeProductoPorId = await Producto.findById(  id  );
-
-    if( !existeProductoPorId ) {
-        return res.status( 400 ).json({
-            msg: `el id ${ id } no existe`
-        });
-    }
-
-
-    res.json({
-        producto
-    });
-
-};
-
 //PUT - Update product 
-const actualizarProducto = async( req, res ) =>{
+const facultadesPut = async( req, res ) =>{
+    try {    
+        //para dinamico
+        const { id_facultad } = req.params;
+        //desustructurar (estado no se puede cambiar)
+        const { codusuario, id_tipo, ...updates } = req.body;
+        
+        // Colocar en mayusculas facultad
+        updates.facultad = updates.facultad.toUpperCase();
+        
+        // Validación de update para no modificar id_facultad
+        if(updates.id_facultad){
+            throw new Error( `No se puede modificar el id` );
+        }
+        
+        const facultad = updates.facultad;
+        // Para encontrar el rol y id
+        const existeIdFacultad = await Tipos_de_Facultades.findOne({   
+            where:{ facultad }
+            });
 
-    const { id } = req.params;
+        // para utilizar el id_tipo
+        const a = existeIdFacultad.dataValues.id_tipo;
+        updates.id_tipo = a;
 
-    // desustructurar
-    const { estado, usuario, ...resto } = req.body;
-    // Set name by middlewares
-    resto.nombre = resto.nombre.toUpperCase();
+        // para utilizar el id_codusuario
+        const b = req.usuario.dataValues.codusuario;
+        updates.codusuario = b;
 
-    // Validacion existeProductoPorId
-    const existeProducto = await Producto.findById( id );
-    if ( !existeProducto ) { 
-        res.status( 400 ).json({
-            msg: `Este Id ${ id } no existe `
+        // Localizo usuario por Id
+        await Facultades.update( updates, { where: { id_facultad } });
+
+        res.status(500).json({
+            updates,   
         });
 
+    } catch (error) {
+
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
     }
-
-    //Set User que hizo el ultimo Update
-    resto.usuario = req.usuario._id;
-
-    const producto = await Producto.findByIdAndUpdate( id, resto, { new: true }).populate('usuario', 'nombre');
-
-    res.status( 500 ).json({
-        producto
-    });
 
 };
 
@@ -177,7 +169,6 @@ const eliminarProducto = async ( req, res ) => {
 module.exports = {
     facultadesPost,
     facultadesGet,
-    obtenerProducto,
-    actualizarProducto,
+    facultadesPut,
     eliminarProducto
 };

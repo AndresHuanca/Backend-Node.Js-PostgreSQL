@@ -4,7 +4,7 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 //importando db-validators
-const { esRoleValido, emailExiste, existeUsuarioPorId, idExiste } = require('../helpers/db-validators');
+const { esRoleValido, emailExiste, existeUsuarioPorId, idExiste } = require('../helpers');
 
 
 //importando middleware

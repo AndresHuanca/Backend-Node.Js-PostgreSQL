@@ -6,6 +6,7 @@ const { check } = require('express-validator');
 //importando db-validators
 const { existeCategoriaPorId, 
         esFacultadValido,
+        existeFacultadPorId,
         emailNoExiste} = require('../helpers/db-validators');
 
 //Middlewares 
@@ -15,10 +16,9 @@ const { validarJWT,
 
 // Import controllers
 const { facultadesPost, 
-        obtenerProducto, 
-        actualizarProducto,
         eliminarProducto,
-        facultadesGet} = require('../controllers/facultades');
+        facultadesGet,
+        facultadesPut} = require('../controllers/facultades');
 
 const router = Router();
 
@@ -26,33 +26,31 @@ const router = Router();
 // GET obtener todos los productos publico
 router.get( '/', facultadesGet );
 
-// Obtener una categoria by id - publico
-// validar si el id existe
-router.get( '/:id', [
-    check( 'id', 'No es un Id Valido' ).isMongoId(),
-    validarCampos
-], obtenerProducto );
-
 // Crear una categoria - privado - cualquier persona with a token validate
 router.post( '/', [
     validarJWT,
     check( 'facultad', 'La Facultad es obligatoria' ).notEmpty(),
     check( 'facultad').custom( esFacultadValido ),
-    check( 'telefono', 'El numero de telefnono es numerico' ).isNumeric(),
+    check( 'telefono', 'El telefono es obligatorio' ).not().isEmpty(),
+    check( 'telefono', 'El numero de telefono es numerico' ).isNumeric(),
     check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
+    check( 'web', 'La web es obligatoria' ).not().isEmpty(),
     check( 'web', 'La web es String' ).isString(),
     validarCampos
 ], facultadesPost );
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre
-router.put( '/:id', [
+router.put( '/:id_facultad', [
     validarJWT,
-    check( 'nombre', 'El nombre es obligatorio' ).not().isEmpty(),
-    check( 'id', 'No es un Id Valido' ).isMongoId(),
+    check( 'telefono', 'El telefono es obligatorio' ).not().isEmpty(),
+    check( 'telefono', 'El numero de telefono es numerico' ).isNumeric(),
+    check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
+    check( 'id_facultad', 'El id_facultad es obligatorio' ).not().isEmpty(),
+    check( 'id_facultad' ).custom(existeFacultadPorId),
+    check( 'facultad').custom( esFacultadValido ),
     validarCampos
-
-], actualizarProducto );
+], facultadesPut );
 
 
 // Delete an categoria - Admin

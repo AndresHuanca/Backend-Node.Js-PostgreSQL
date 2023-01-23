@@ -2,7 +2,7 @@
 const Roles = require('../models/roles');
 
 //importando modelo usuario //importando modelo categoria
-const { Usuarios, Categoria, Producto, Tipos_de_Facultades } = require('../models');
+const { Usuarios, Categoria, Producto, Tipos_de_Facultades, Facultades } = require('../models');
 
 // ----------------------USUARIOS-----------------------------
 // Validad existencia del id usuario
@@ -95,10 +95,10 @@ const emailNoExiste = async ( email = '' ) => {
 };
 
 // Validaciones de BD de CATEGORIAS
-const existeProductoPorId = async ( id = '' ) => { 
+const existeFacultadPorId = async ( id_facultad = '' ) => { 
     // verifficar si el id existe
-    existeProducto = await Producto.findById(id);
-    if( !existeProducto ) {
+    existeFacultad = await Facultades.findByPk(id_facultad);
+    if( !existeFacultad ) {
         throw new Error( `El id ${ id } no existe`)
         
     }
@@ -123,7 +123,7 @@ module.exports = {
     existeCategoriaPorId,
     nombreCategoriaExiste,
     esFacultadValido,
-    existeProductoPorId,
+    existeFacultadPorId,
     coleccionesPermitidas,
     idExiste,
     emailNoExiste
