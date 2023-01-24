@@ -1,4 +1,5 @@
 const { response } = require('express');
+const { esRoleValido } = require('../helpers');
 
 const { Categoria, Facultades, Alumnos } = require('../models');
 
@@ -33,18 +34,18 @@ const alumnosGet = async( req, res= response ) => {
 
 };
 
-// obtenerCategoria (objeto) populate
-const obtenerCategoria = async( req, res = response ) => {
+// obtenerAlumnos x Id falta implementar
+// const obtenerCategoria = async( req, res = response ) => {
 
-    const { id } = req.params;
+//     const { id } = req.params;
 
-    const categoria = await Categoria.findById(id).populate('usuario', 'nombre');	
+//     const categoria = await Categoria.findById(id).populate('usuario', 'nombre');	
 
-    res.json({
-        categoria,
-    });
+//     res.json({
+//         categoria,
+//     });
 
-};
+// };
 
 const alumnosPost = async( req, res= response)  => {
     try {
@@ -73,7 +74,7 @@ const alumnosPost = async( req, res= response)  => {
         // console.log({studentNew});
 
         // creator user of studentNew - Muestra el usuario que creo el alumno
-        const creatorUser = req.usuario;
+        const postUser = req.usuario.dataValues.codusuario;
         
         //creando instancia de usuario
         const alumno = new Alumnos( studentNew );
@@ -84,7 +85,7 @@ const alumnosPost = async( req, res= response)  => {
         //show user create
         res.json({
             alumno,
-            creatorUser,
+            postUser,
             
         });
         
@@ -99,39 +100,59 @@ const alumnosPost = async( req, res= response)  => {
 };
 
 // actualizarCategoria nombre
-const actualizarCategoria = async( req, res ) => {
+const alumnosPut = async( req, res ) => {
 
-    const { id } = req.params;
+    try {
 
-    // desustructurar
-    const { estado, usuario, ...resto } = req.body;
-    // para colocar en mayusculas
-    resto.nombre = resto.nombre.toUpperCase();
-    //establecer usuario que hizo ultima modificacion
-    resto.usuario = req.usuario._id;
+        const { id_alumno } = req.params;
+    
+        // desestructurar
+        const { id_facultad, ...updates } = req.body;
+    
+        // Validación de update para no modificar id_alumno
+        if(updates.id_alumno){
+            throw new Error( `No se puede modificar el id` );
+        }
+    
+        //establecer usuario que hizo ultima modificacion
+        //creator user of studentNew - Muestra el usuario que actualizo el alumno
+        const updateUser = req.usuario.dataValues.codusuario;
+    
+        // Para encontrar el alumno
+        const existeIdAlumno = await Alumnos.findByPk(id_alumno);
+    
+        // Localizo usuario por Id
+        await Alumnos.update( updates, { where: { id_alumno } });
+    
+        res.status( 500 ).json({
+            existeIdAlumno,
+            updateUser
+        });
+    } catch (error) {
+        
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
+    }
 
-    const categoria = await Categoria.findByIdAndUpdate( id, resto, {new: true});
-
-    res.status( 500 ).json({
-        categoria
-    });
 
 };
 
-// borrarCategoria - estado:false<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// Eliminar un Alumno
+const alumnosDelete  = async( req, res ) => {
 
-const borrarCategoria = async( req, res ) => {
-
-    const { id } = req.params;
+    const { id_alumno } = req.params;
 
     // borrar fisicamente
-    // const categoria =  await Categoria.findByIdAndDelete( id );
+    await Alumnos.destroy({where: { id_alumno }}, { truncate: true });
 
-    const categoria = await Categoria.findByIdAndUpdate( id, { estado: false }, { new: true });
+    //establecer usuario que hizo ultima modificacion
+    //deleteUser - Muestra el usuario que elimino el alumno
+    const deleteUser = req.usuario.dataValues.codusuario;
 
     res.json({
-        msg: 'Delete Winner',
-        categoria
+        msg: `El Alumno de id ${id_alumno} eliminado`,
+        deleteUser
     });
 
 };
@@ -140,7 +161,7 @@ const borrarCategoria = async( req, res ) => {
 module.exports = {
     alumnosPost,
     alumnosGet,
-    obtenerCategoria,
-    actualizarCategoria,
-    borrarCategoria
+    // obtenerCategoria,
+    alumnosPut,
+    alumnosDelete
 };

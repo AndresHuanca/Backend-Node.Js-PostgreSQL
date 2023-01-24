@@ -11,7 +11,8 @@ const { esFacultadValido,
 //Middlewares 
 const { validarJWT,
         validarCampos, 
-        esAdminRole} = require('../middlewares');
+        esAdminRole,
+        tieneRole} = require('../middlewares');
 
 // Import controllers
 const { facultadesPost, 
@@ -55,12 +56,9 @@ router.put( '/:id_facultad', [
 // Delete an categoria - Admin
 // que sea un id de mongo
 router.delete( '/:id_facultad', [
-    validarJWT,
-    esAdminRole, //Para que solo el administrador elimine
-    // tieneRole('ADMIN-ROL', 'USER-ROL'),    check( 'id', 'No es un Id Valido' ).isMongoId(),
+    validarJWT, 
     check( 'id_facultad' ).custom(existeFacultadPorId),
     validarCampos
-
 ], facultadesDelete );
 
 module.exports = router;

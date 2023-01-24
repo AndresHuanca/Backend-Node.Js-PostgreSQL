@@ -5,17 +5,19 @@ const { check } = require('express-validator');
 // Middlewares
 const { validarJWT, 
         validarCampos, 
-        esAdminRole } = require('../middlewares');
+        esAdminRole, 
+        tieneRole} = require('../middlewares');
 
 // import controllers
 const { alumnosPost, 
         obtenerCategoria, 
-        actualizarCategoria, 
-        borrarCategoria, 
-        alumnosGet} = require('../controllers');
+        alumnosGet,
+        alumnosPut,
+        alumnosDelete} = require('../controllers');
 
 const { existeCategoriaPorId, 
-        existeFacultadPorId} = require('../helpers');
+        existeFacultadPorId,
+        existeAlumnoPorId} = require('../helpers');
 
 
 const router = Router();
@@ -27,12 +29,12 @@ router.get( '/', alumnosGet );
 
 // Obtener una categoria by id - publico
 // validar si el id existe
-router.get( '/:id', [
-    check( 'id', 'No es un Id Valido' ).isMongoId(),
-    check( 'id' ).custom( existeCategoriaPorId ),
-    validarCampos
+// router.get( '/:id', [
+//     check( 'id', 'No es un Id Valido' ).isMongoId(),
+//     check( 'id' ).custom( existeCategoriaPorId ),
+//     validarCampos
 
-], obtenerCategoria );
+// ], obtenerCategoria );
 
 // Crear una categoria - privado - cualquier persona with a token validate
 router.post( '/:id_facultad', [ 
@@ -49,27 +51,25 @@ router.post( '/:id_facultad', [
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre
-router.put( '/:id', [
+router.put( '/:id_alumno', [
     validarJWT,
     check( 'nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check( 'id', 'No es un Id Valido' ).isMongoId(),
-    check( 'id' ).custom( existeCategoriaPorId ),
+    check( 'apellido', 'El apellido es obligatorio').not().isEmpty(),
+    check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
+    check( 'telefono', 'El telefono es obligatorio' ).not().isEmpty(),
+    check( 'telefono', 'El numero de telefono es numerico' ).isNumeric(),
+    check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
+    check( 'id_alumno' ).custom( existeAlumnoPorId ),
     validarCampos
-], actualizarCategoria );
+], alumnosPut );
 
 // Delete an categoria - Admin
 // que sea un id de mongo
-router.delete( '/:id', [
+router.delete( '/:id_alumno', [
     validarJWT,
-    esAdminRole,
-    check( 'id', 'No es un Id valido ').isMongoId(),
-    check( 'id' ).custom( existeCategoriaPorId ),
+    check( 'id_alumno' ).custom( existeAlumnoPorId ),
     validarCampos
-], borrarCategoria );
+], alumnosDelete );
 
-// // Delete an categoria - Admin
-// router.delete( '/:id', ( req, res ) => {
-//     res.json('delete'); ---EXAMPLE CONECCTION CONTROLLER---
-// });
 
 module.exports = router;

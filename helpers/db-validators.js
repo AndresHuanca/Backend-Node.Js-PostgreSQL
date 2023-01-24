@@ -1,6 +1,6 @@
 
 //importando modelo usuario //importando modelo categoria
-const { Usuarios, Roles, Tipos_de_Facultades, Facultades } = require('../models');
+const { Usuarios, Roles, Tipos_de_Facultades, Facultades, Alumnos } = require('../models');
 
 // ----------------------USUARIOS-----------------------------
 // Validad existencia del id usuario
@@ -96,7 +96,18 @@ const emailNoExiste = async ( email = '' ) => {
     
 };
 
-// Validaciones de BD de CATEGORIAS
+// -----------------------------ALUMNOS----------------------------
+
+// Validación de existencia de Alumno por Id
+const existeAlumnoPorId = async ( id_alumno = '' ) => { 
+    // verifficar si el id existe
+    existeAlumno = await Alumnos.findByPk(id_alumno);
+    if( !existeAlumno ) {
+        throw new Error( `El id ${ id_alumno } no existe en DB`)
+        
+    }
+};
+
 
 // Validaciones de Carga de Archivos
 const coleccionesPermitidas =  (coleccion = '', colecciones = [] ) => {
@@ -117,6 +128,7 @@ module.exports = {
     nombreCategoriaExiste,
     esFacultadValido,
     existeFacultadPorId,
+    existeAlumnoPorId,
     coleccionesPermitidas,
     idExiste,
     emailNoExiste
