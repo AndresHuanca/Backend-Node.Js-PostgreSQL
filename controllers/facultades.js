@@ -29,13 +29,13 @@ const facultadesPost = async( req, res = response ) => {
        // console.log(existeIdFacuUsuaTipo);
         //--------------------------fin----------------------------- 
 
-        // Establesco codusuario en "a" sacando del JWT 
-        const a = req.usuario.dataValues.codusuario;
-
-        // Establesco id_tipo en "b" sacando de DB
         const facultad = resto.facultad;
+        // Establesco id_tipo en "b" sacando de DB
         const existeFacultad = await Tipos_de_Facultades.findOne({where: {facultad}})
         const b = existeFacultad.dataValues.id_tipo;
+        
+        // Establesco codusuario en "a" sacando del JWT 
+        const a = req.usuario.dataValues.codusuario;
 
         //Crear nueva facultad 
         const facultadNew = {

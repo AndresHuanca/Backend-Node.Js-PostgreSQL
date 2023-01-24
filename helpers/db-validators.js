@@ -47,14 +47,6 @@ const esRoleValido = async(rol='') => {
 
 // ----------------------CATEGORIA-----------------------------
 // Validaciones de BD de CATEGORIAS
-const existeCategoriaPorId = async ( id = '' ) => { 
-    // verifficar si el id existe
-    existeCategoria = await Categoria.findById(id);
-    if( !existeCategoria ) {
-        throw new Error( `El id ${ id } no existe`)
-        
-    }
-};
 
 // Validación de Nombre unico de Categorias
 const nombreCategoriaExiste = async ( nombre = '' ) => {
@@ -65,7 +57,7 @@ const nombreCategoriaExiste = async ( nombre = '' ) => {
     if( existeNombre ) {
         throw new Error( `El nombre ${ nombre } ya existe` );
     }
-
+    
 };
 
 //-----------------------FACULTADES----------------------------------- 
@@ -80,6 +72,7 @@ const esFacultadValido = async ( facultad = '' ) => {
     }
 };
 
+// Validación de existencia de Facultad por Id
 const existeFacultadPorId = async ( id_facultad = '' ) => { 
     // verifficar si el id existe
     existeFacultad = await Facultades.findOne({ where: {id_facultad} });
@@ -88,6 +81,9 @@ const existeFacultadPorId = async ( id_facultad = '' ) => {
         
     }
 };
+
+
+
 // Valida la existencia de email registrado
 const emailNoExiste = async ( email = '' ) => {  
 
@@ -118,7 +114,6 @@ module.exports = {
     esRoleValido,
     emailExiste,
     existeUsuarioPorId,
-    existeCategoriaPorId,
     nombreCategoriaExiste,
     esFacultadValido,
     existeFacultadPorId,

@@ -1,3 +1,4 @@
+const Alumnos = require("./alumnos");
 const Facultades = require("./facultades");
 const Roles = require("./roles");
 const Tipos_de_Facultades = require("./tipos_de_facultades");
@@ -30,3 +31,11 @@ Usuarios.hasMany(Facultades, {as:'users_x_faculties', foreignKey:'codusuario'});
 // Se añade una clave id_rol a la tabla Usuarios
 Facultades.belongsTo( Usuarios, {as: 'faculties_x_users', foreignKey:'codusuario'} );
 
+// FACULTADES 1 -------N ALUMNOS
+// Uno a muchos, 1 a N
+// Facultades va a tener muchas alumnos
+// Se añade una clave id_facultad a la tabla Alumnos
+Facultades.hasMany(Alumnos, {as:'faculties_x_students', foreignKey:'id_facultad'});
+
+// Se añade una clave id_rol a la tabla Usuarios
+Alumnos.belongsTo( Facultades, {as: 'students_x_faculties', foreignKey:'id_facultad'} );

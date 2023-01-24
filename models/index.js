@@ -1,6 +1,6 @@
 //optmizando importaciones 
 
-const Categoria = require('./categoria');
+const Alumnos = require('./alumnos');
 const Roles = require('./roles');
 const Server = require('./server');
 const Usuarios = require('./usuarios');
@@ -11,7 +11,7 @@ const Tipos_de_Facultades = require('./tipos_de_facultades');
 
 
 module.exports = {
-    Categoria,
+    Alumnos,
     Facultades,
     Roles,
     Server,

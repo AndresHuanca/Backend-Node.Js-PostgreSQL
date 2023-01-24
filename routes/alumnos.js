@@ -8,14 +8,14 @@ const { validarJWT,
         esAdminRole } = require('../middlewares');
 
 // import controllers
-const { crearCategoria, 
-        obtenerCategorias, 
+const { alumnosPost, 
         obtenerCategoria, 
         actualizarCategoria, 
-        borrarCategoria } = require('../controllers/categorias');
+        borrarCategoria, 
+        alumnosGet} = require('../controllers');
 
 const { existeCategoriaPorId, 
-        nombreCategoriaExiste } = require('../helpers/db-validators');
+        existeFacultadPorId} = require('../helpers');
 
 
 const router = Router();
@@ -23,7 +23,7 @@ const router = Router();
 // {{url}}/api/categorias
 
 // Obtener todas las categorias - publico
-router.get( '/', obtenerCategorias );
+router.get( '/', alumnosGet );
 
 // Obtener una categoria by id - publico
 // validar si el id existe
@@ -35,12 +35,17 @@ router.get( '/:id', [
 ], obtenerCategoria );
 
 // Crear una categoria - privado - cualquier persona with a token validate
-router.post( '/', [ 
+router.post( '/:id_facultad', [ 
     validarJWT,
     check( 'nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check( 'nombre' ).custom( nombreCategoriaExiste ),
+    check( 'apellido', 'El apellido es obligatorio').not().isEmpty(),
+    check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
+    check( 'telefono', 'El telefono es obligatorio' ).not().isEmpty(),
+    check( 'telefono', 'El numero de telefono es numerico' ).isNumeric(),
+    check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
+    check( 'id_facultad' ).custom( existeFacultadPorId ),
     validarCampos
-], crearCategoria );
+], alumnosPost );
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre

@@ -14,7 +14,6 @@ const Facultades = db.define ( 'facultades', {
     telefono: {  
         type: DataTypes.STRING, 
         unique: true,
-        // required: [ true, 'La contraseña es obligatorio'],
     },
     web: { 
         type: DataTypes.STRING, 
