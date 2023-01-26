@@ -1,5 +1,7 @@
 const Alumnos = require("./alumnos");
 const Facultades = require("./facultades");
+const Profesores = require("./profesores");
+const Profesores_x_Facultades = require("./profesores_x_facultades");
 const Roles = require("./roles");
 const Tipos_de_Facultades = require("./tipos_de_facultades");
 const Usuarios = require("./usuarios");
@@ -39,3 +41,21 @@ Facultades.hasMany(Alumnos, {as:'faculties_x_students', foreignKey:'id_facultad'
 
 // Se añade una clave id_rol a la tabla Usuarios
 Alumnos.belongsTo( Facultades, {as: 'students_x_faculties', foreignKey:'id_facultad'} );
+
+// NaN
+// El usuario pertenezca a varias bandas
+// Esto crear una nueva tabla en la base de datos llamada profesores_x_facultades
+// user.addBand user.getBands...etc.
+
+Profesores.belongsToMany(Facultades, { through: "profesores_x_facultades" , foreignKey:'id_profesor', otherKey: 'id_profesor' });
+Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades" , foreignKey:'id_facultad', otherKey: 'id_facultad'});
+
+// Profesores.belongsToMany(Facultades, { through: "profesores_x_facultades" , sourceKey: 'id_profesor', targetKey: 'id_facultad'});
+// Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades" , sourceKey: 'id_facultad', targetKey: 'id_profesor' });
+
+
+// Profesores.belongsToMany(Facultades, { through: Profesores_x_Facultades });
+// Facultades.belongsToMany(Profesores, { through: Profesores_x_Facultades });
+
+// Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades"});
+// Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades"})

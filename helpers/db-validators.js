@@ -1,6 +1,8 @@
 
 //importando modelo usuario //importando modelo categoria
 const { Usuarios, Roles, Tipos_de_Facultades, Facultades, Alumnos } = require('../models');
+const Profesores = require('../models/profesores');
+const Profesores_x_Facultades = require('../models/profesores_x_facultades');
 
 // ----------------------USUARIOS-----------------------------
 // Validad existencia del id usuario
@@ -109,6 +111,34 @@ const existeAlumnoPorId = async ( id_alumno = '' ) => {
 };
 
 
+// -----------------------------PROFESORES----------------------------
+// Validación de existencia de Profesor por Id
+const existeProfesorPorId = async ( id_profesor = '' ) => { 
+    // verifficar si el id existe
+    existeProfesor = await Profesores.findByPk(id_profesor);
+    if( !existeProfesor ) {
+        throw new Error( `El id ${ id_profesor } no existe en DB`)
+        
+    }
+};
+
+// -----------------------------PROFESORES_x_FACULTADES----------------------------
+// Verifica si existe profesor duplicado
+const proFacExiste = async ( pro_x_fac='') => {
+    // extraigo el id_profesor y id_facultad que se esta creando en pro_x_facPost   
+    const id_profesor = pro_x_fac.id_profesor;
+    const id_facultad = pro_x_fac.id_facultad;
+    // Busco la columna por id_profersor y el id_facultad
+    existeProFacFull = await Profesores_x_Facultades.findOne( { where: {id_profesor, id_facultad} })
+
+    // Si existen los dos datos envía error 
+    if(existeProFacFull){
+        throw new Error( `El Profesor x facultad  ${ id_profesor } - ${ id_facultad } ya esta registrado`)
+    }
+
+}
+
+
 // Validaciones de Carga de Archivos
 const coleccionesPermitidas =  (coleccion = '', colecciones = [] ) => {
 
@@ -129,6 +159,8 @@ module.exports = {
     esFacultadValido,
     existeFacultadPorId,
     existeAlumnoPorId,
+    existeProfesorPorId,
+    proFacExiste,
     coleccionesPermitidas,
     idExiste,
     emailNoExiste

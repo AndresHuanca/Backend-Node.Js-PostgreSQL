@@ -10,6 +10,7 @@ const Facultades = db.define ( 'facultades', {
         type: DataTypes.UUID,
         primaryKey: true,
         autoIncrement: true,
+        unique: true,
     },
     telefono: {  
         type: DataTypes.STRING, 
@@ -34,6 +35,7 @@ const Facultades = db.define ( 'facultades', {
             key: 'id_tipo'
         },
     }
+    
     
 });
 

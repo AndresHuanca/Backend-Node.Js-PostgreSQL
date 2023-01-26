@@ -1,9 +1,10 @@
 const { response } = require('express');
 
 const { Facultades, Alumnos } = require('../models');
+const Profesores = require('../models/profesores');
 
 // obtener todos los alumnos
-const alumnosGet = async( req, res= response ) => {
+const profesoresGet = async( req, res= response ) => {
 
     try {
         // Busco los alumnos en DB
@@ -33,58 +34,34 @@ const alumnosGet = async( req, res= response ) => {
 
 };
 
-// obtenerAlumnos x Id falta implementar
-// const obtenerCategoria = async( req, res = response ) => {
-
-//     const { id } = req.params;
-
-//     const categoria = await Categoria.findById(id).populate('usuario', 'nombre');	
-
-//     res.json({
-//         categoria,
-//     });
-
-// };
-
-const alumnosPost = async( req, res= response)  => {
+const profesoresPost = async( req, res= response)  => {
     try {
-        // Obtener id-facultad
-        const { id_facultad } = req.params;
-
+    
         // una forma de enviar todo {google, ...resto
-        const { id_alumno,...resto} = req.body;
-
-        // Para encontrar el y id_facultad enviando el id_facultad
-        // Viene toda la información de la facultad
-        const existeIdRol= await Facultades.findByPk(id_facultad);
-        // console.log(existeIdRol);
+        const { id_profesores,...resto} = req.body;
         
-        // Asignando id_facultad a variable a
-        const a = existeIdRol.dataValues.id_facultad;
         
         // Variables envio por defecto estado: true
-        const studentNew = {
+        const teacherNew = {
             nombre: resto.nombre,
             apellido: resto.apellido,
             email: resto.email,
             telefono: resto.telefono,
-            id_facultad : a
         };
-        // console.log({studentNew});
 
         // creator user of studentNew - Muestra el usuario que creo el alumno
         const postUser = req.usuario.dataValues.codusuario;
         
         //creando instancia de usuario
-        const alumno = new Alumnos( studentNew );
+        const profesor = new Profesores( teacherNew );
     
         //guardar en DB
-        await alumno.save();
+        await profesor.save();
 
         //show user create
         res.json({
-            alumno,
-            postUser,
+            profesor,
+            postUser
             
         });
         
@@ -158,9 +135,8 @@ const alumnosDelete  = async( req, res ) => {
 
 
 module.exports = {
-    alumnosPost,
-    alumnosGet,
-    // obtenerCategoria,
+    profesoresPost,
+    profesoresGet,
     alumnosPut,
     alumnosDelete
 };

@@ -14,7 +14,9 @@ const { alumnosPost,
         alumnosDelete } = require('../controllers');
 
 const { existeFacultadPorId,
-        existeAlumnoPorId } = require('../helpers');
+        existeAlumnoPorId, 
+        existeProfesorPorId} = require('../helpers');
+const { pro_x_facPost } = require('../controllers/profesores_x_facultades');
 
 
 const router = Router();
@@ -34,17 +36,12 @@ router.get( '/', alumnosGet );
 // ], obtenerCategoria );
 
 // Crear una categoria - privado - cualquier persona with a token validate
-router.post( '/:id_facultad', [ 
+router.post( '/:id_profesor/:id_facultad', [ 
     validarJWT,
-    check( 'nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check( 'apellido', 'El apellido es obligatorio').not().isEmpty(),
-    check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
-    check( 'telefono', 'El telefono es obligatorio' ).not().isEmpty(),
-    check( 'telefono', 'El numero de telefono es numerico' ).isNumeric(),
-    check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
     check( 'id_facultad' ).custom( existeFacultadPorId ),
+    check( 'id_profesor' ).custom( existeProfesorPorId ),
     validarCampos
-], alumnosPost );
+], pro_x_facPost );
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre

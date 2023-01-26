@@ -12,12 +12,14 @@ class Server {
         this.port = process.env.PORT;
 
         this.paths = {
-            auth:       '/api/auth',
-            buscar:     '/api/buscar',
-            alumnos:    '/api/alumnos',
-            facultades:  '/api/facultades',
-            usuarios:   '/api/usuarios',
-            uploads:   '/api/uploads'
+            auth:                   '/api/auth',
+            alumnos:                '/api/alumnos',
+            buscar:                 '/api/buscar',
+            facultades:             '/api/facultades',
+            profesores:             '/api/profesores',
+            profesores_x_facultades:'/api/profesores_x_facultades',
+            usuarios:               '/api/usuarios',
+            uploads:                '/api/uploads'
         };
 
         // Conectar a base de datos
@@ -56,12 +58,14 @@ class Server {
     //siguiente ruta(get- put- post- delete)
     routes() {
         
-        this.app.use(  this.paths.auth, require('../routes/auth') );
-        this.app.use(  this.paths.buscar, require('../routes/buscar') );
-        this.app.use(  this.paths.alumnos, require('../routes/alumnos') );
-        this.app.use(  this.paths.usuarios, require('../routes/usuarios') );
-        this.app.use(  this.paths.facultades, require('../routes/facultades') );
-        this.app.use(  this.paths.uploads, require('../routes/uploads') );
+        this.app.use(  this.paths.auth,                    require('../routes/auth') );
+        this.app.use(  this.paths.alumnos,                 require('../routes/alumnos') );
+        this.app.use(  this.paths.buscar,                  require('../routes/buscar') );
+        this.app.use(  this.paths.facultades,              require('../routes/facultades') );
+        this.app.use(  this.paths.profesores,              require('../routes/profesores') );
+        this.app.use(  this.paths.profesores_x_facultades, require('../routes/profesores_x_facultades') );
+        this.app.use(  this.paths.usuarios,                require('../routes/usuarios') );
+        this.app.use(  this.paths.uploads,                 require('../routes/uploads') );
 
     }
 
