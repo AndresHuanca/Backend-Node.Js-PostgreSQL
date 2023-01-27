@@ -10,9 +10,11 @@ const { validarJWT,
 const { profesoresPost, 
         profesoresGet,
         alumnosPut,
-        alumnosDelete } = require('../controllers');
+        alumnosDelete, 
+        ProfesoresPut,
+        profesoresDelete} = require('../controllers');
 
-const { existeAlumnoPorId } = require('../helpers');
+const { existeAlumnoPorId, existeProfesorPorId } = require('../helpers');
 
 
 const router = Router();
@@ -37,7 +39,7 @@ router.post( '/', [
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre
-router.put( '/:id_alumno', [
+router.put( '/:id_profesor', [
     validarJWT,
     check( 'nombre', 'El nombre es obligatorio').not().isEmpty(),
     check( 'apellido', 'El apellido es obligatorio').not().isEmpty(),
@@ -45,16 +47,16 @@ router.put( '/:id_alumno', [
     check( 'telefono', 'El telefono es obligatorio' ).not().isEmpty(),
     check( 'telefono', 'El numero de telefono es numerico' ).isNumeric(),
     check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
-    check( 'id_alumno' ).custom( existeAlumnoPorId ),
+    check( 'id_profesor' ).custom( existeProfesorPorId ),
     validarCampos
-], alumnosPut );
+], ProfesoresPut );
 
 // Delete an teacher
-router.delete( '/:id_alumno', [
+router.delete( '/:id_profesor', [
     validarJWT,
-    check( 'id_alumno' ).custom( existeAlumnoPorId ),
+    check( 'id_profesor' ).custom( existeProfesorPorId ),
     validarCampos
-], alumnosDelete );
+], profesoresDelete );
 
 
 module.exports = router;

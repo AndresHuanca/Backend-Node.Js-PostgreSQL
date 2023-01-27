@@ -22,6 +22,7 @@ const Profesores_x_Facultades = db.define('profesores_x_facultades', {
         key: 'id_facultad'
     }
     },
+    // Example de concatenación de variables
     proFacFull: {
         type: DataTypes.VIRTUAL,
         get() {

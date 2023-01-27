@@ -47,6 +47,7 @@ Alumnos.belongsTo( Facultades, {as: 'students_x_faculties', foreignKey:'id_facul
 // Esto crear una nueva tabla en la base de datos llamada profesores_x_facultades
 // user.addBand user.getBands...etc.
 
+// otherKey asigna el fk especifico que se implementa en la DB
 Profesores.belongsToMany(Facultades, { through: "profesores_x_facultades" , foreignKey:'id_profesor', otherKey: 'id_profesor' });
 Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades" , foreignKey:'id_facultad', otherKey: 'id_facultad'});
 

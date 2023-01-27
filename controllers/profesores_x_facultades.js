@@ -12,11 +12,11 @@ const pro_x_facPost = async( req, res = response ) => {
         // en el body debe venir: id
         const { id_facultad, id_profesor } = req.params;
 
-        // Establesco id_profesor en "a" sacando de DB
+        // Establezco id_profesor en "a" sacando de DB
         const existeProfesor = await Profesores.findOne({where: {id_profesor}})
         const a = existeProfesor.dataValues.id_profesor;
         
-        // Establesco id_facultad en "b" sacando de DB
+        // Establezco id_facultad en "b" sacando de DB
         const existeFacultad = await Facultades.findByPk(id_facultad)
         const b = existeFacultad.dataValues.id_facultad;
 

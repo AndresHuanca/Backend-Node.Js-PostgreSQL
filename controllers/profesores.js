@@ -7,21 +7,16 @@ const Profesores = require('../models/profesores');
 const profesoresGet = async( req, res= response ) => {
 
     try {
-        // Busco los alumnos en DB
-        const alumnos= await Alumnos.findAll({
-            include:[{
-                model: Facultades,
-                as: 'students_x_faculties',
-                attributes:['id_facultad']
-            }],
-            attributes: ['id_alumno', 'nombre', 'apellido', 'email', 'telefono'],
+        // Busco los profesores en DB
+        const profesores= await Profesores.findAll({
+            attributes: ['id_profesor', 'nombre', 'apellido', 'email', 'telefono'],
         });
         //all users 
-        const total =  alumnos.length;
+        const total =  profesores.length;
         
         res.json({
             total,
-            alumnos,
+            profesores,
         });
 
     } catch (error) {
@@ -76,17 +71,17 @@ const profesoresPost = async( req, res= response)  => {
 };
 
 // actualizarCategoria nombre
-const alumnosPut = async( req, res ) => {
+const ProfesoresPut = async( req, res ) => {
 
     try {
 
-        const { id_alumno } = req.params;
+        const { id_profesor } = req.params;
     
-        // desestructurar
-        const { id_facultad, ...updates } = req.body;
+        // id_desestructurar creado para hacerlo más simple la actualización de variables
+        const { id_desescructurar, ...updates } = req.body;
     
         // Validación de update para no modificar id_alumno
-        if(updates.id_alumno){
+        if(updates.id_profesor){
             throw new Error( `No se puede modificar el id` );
         }
     
@@ -95,13 +90,13 @@ const alumnosPut = async( req, res ) => {
         const updateUser = req.usuario.dataValues.codusuario;
     
         // Para encontrar el alumno
-        const existeIdAlumno = await Alumnos.findByPk(id_alumno);
+        const existeIdProfesor = await Profesores.findByPk(id_profesor);
     
         // Localizo usuario por Id
-        await Alumnos.update( updates, { where: { id_alumno } });
+        await Profesores.update( updates, { where: { id_profesor } });
     
         res.status( 500 ).json({
-            existeIdAlumno,
+            existeIdProfesor,
             updateUser
         });
     } catch (error) {
@@ -115,19 +110,19 @@ const alumnosPut = async( req, res ) => {
 };
 
 // Eliminar un Alumno
-const alumnosDelete  = async( req, res ) => {
+const profesoresDelete  = async( req, res ) => {
 
-    const { id_alumno } = req.params;
+    const { id_profesor } = req.params;
 
     // borrar fisicamente
-    await Alumnos.destroy({where: { id_alumno }}, { truncate: true });
+    await Profesores.destroy({where: { id_profesor }}, { truncate: true });
 
     //establecer usuario que hizo ultima modificacion
     //deleteUser - Muestra el usuario que elimino el alumno
     const deleteUser = req.usuario.dataValues.codusuario;
 
     res.json({
-        msg: `El Alumno de id ${id_alumno} eliminado`,
+        msg: `El Profesor de id ${id_profesor} eliminado`,
         deleteUser
     });
 
@@ -137,6 +132,6 @@ const alumnosDelete  = async( req, res ) => {
 module.exports = {
     profesoresPost,
     profesoresGet,
-    alumnosPut,
-    alumnosDelete
+    ProfesoresPut,
+    profesoresDelete
 };
