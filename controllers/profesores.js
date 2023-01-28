@@ -33,7 +33,7 @@ const profesoresPost = async( req, res= response)  => {
     try {
     
         // una forma de enviar todo {google, ...resto
-        const { id_profesores,...resto} = req.body;
+        const { id_profesor,...resto} = req.body;
         
         
         // Variables envio por defecto estado: true
@@ -71,7 +71,7 @@ const profesoresPost = async( req, res= response)  => {
 };
 
 // actualizarCategoria nombre
-const ProfesoresPut = async( req, res ) => {
+const profesoresPut = async( req, res ) => {
 
     try {
 
@@ -132,6 +132,6 @@ const profesoresDelete  = async( req, res ) => {
 module.exports = {
     profesoresPost,
     profesoresGet,
-    ProfesoresPut,
+    profesoresPut,
     profesoresDelete
 };

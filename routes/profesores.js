@@ -9,10 +9,8 @@ const { validarJWT,
 // import controllers
 const { profesoresPost, 
         profesoresGet,
-        alumnosPut,
-        alumnosDelete, 
-        ProfesoresPut,
-        profesoresDelete} = require('../controllers');
+        profesoresDelete,
+        profesoresPut} = require('../controllers');
 
 const { existeAlumnoPorId, existeProfesorPorId } = require('../helpers');
 
@@ -49,7 +47,7 @@ router.put( '/:id_profesor', [
     check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
     check( 'id_profesor' ).custom( existeProfesorPorId ),
     validarCampos
-], ProfesoresPut );
+], profesoresPut );
 
 // Delete an teacher
 router.delete( '/:id_profesor', [

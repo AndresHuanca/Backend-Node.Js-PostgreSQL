@@ -7,33 +7,25 @@ const { validarJWT,
         validarCampos } = require('../middlewares');
 
 // import controllers
-const { alumnosPost, 
-        obtenerCategoria, 
-        alumnosGet,
-        alumnosPut,
-        alumnosDelete } = require('../controllers');
+const { alumnosDelete, 
+        pro_x_facPut,
+        pro_x_facDelete} = require('../controllers');
 
 const { existeFacultadPorId,
         existeAlumnoPorId, 
-        existeProfesorPorId} = require('../helpers');
-const { pro_x_facPost } = require('../controllers/profesores_x_facultades');
+        existeProfesorPorId,
+        existeProfesor_x_facultadPorId,
+        proFacExiste} = require('../helpers');
+const { pro_x_facPost, pro_x_facGet } = require('../controllers/profesores_x_facultades');
 
 
 const router = Router();
 
 // {{url}}/api/categorias
 
-// Obtener todas las categorias - publico
-router.get( '/', alumnosGet );
+// Obtener todas los profesores_x_facultad - publico
+router.get( '/', pro_x_facGet );
 
-// Obtener una categoria by id - publico
-// validar si el id existe
-// router.get( '/:id', [
-//     check( 'id', 'No es un Id Valido' ).isMongoId(),
-//     check( 'id' ).custom( existeCategoriaPorId ),
-//     validarCampos
-
-// ], obtenerCategoria );
 
 // Crear una categoria - privado - cualquier persona with a token validate
 router.post( '/:id_profesor/:id_facultad', [ 
@@ -45,25 +37,19 @@ router.post( '/:id_profesor/:id_facultad', [
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre
-router.put( '/:id_alumno', [
+router.put( '/:id_profesor_x_facultad', [
     validarJWT,
-    check( 'nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check( 'apellido', 'El apellido es obligatorio').not().isEmpty(),
-    check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
-    check( 'telefono', 'El telefono es obligatorio' ).not().isEmpty(),
-    check( 'telefono', 'El numero de telefono es numerico' ).isNumeric(),
-    check( 'telefono', 'El numero de debe tener 9 numeros' ).isLength({min :9, max:9}),
-    check( 'id_alumno' ).custom( existeAlumnoPorId ),
+    check( 'id_profesor_x_facultad' ).custom( existeProfesor_x_facultadPorId ),
     validarCampos
-], alumnosPut );
+], pro_x_facPut );
 
 // Delete an categoria - Admin
 // que sea un id de mongo
-router.delete( '/:id_alumno', [
+router.delete( '/:id_profesor_x_facultad', [
     validarJWT,
-    check( 'id_alumno' ).custom( existeAlumnoPorId ),
+    check( 'id_profesor_x_facultad' ).custom( existeProfesor_x_facultadPorId ),
     validarCampos
-], alumnosDelete );
+], pro_x_facDelete );
 
 
 module.exports = router;

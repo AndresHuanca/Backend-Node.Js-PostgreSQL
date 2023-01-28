@@ -54,7 +54,7 @@ router.put('/:codusuario',[
 router.delete('/:codusuario', [
         validarJWT,
         esAdminRole, //Para que solo el administrador elimine
-        // tieneRole('ADMIN-ROL', 'USER-ROL'),
+        tieneRole('ADMIN-ROL', 'USER-ROL'),
         check( 'codusuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosDelete );

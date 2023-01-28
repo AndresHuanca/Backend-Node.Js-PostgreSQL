@@ -5,6 +5,7 @@ const authCont = require('./auth');
 const facultadesCont = require('./facultades');
 const alumnosCont = require('./alumnos');
 const profesoresCont = require('./profesores');
+const profesores_x_facultadesCont = require('./profesores_x_facultades');
 
 
 
@@ -13,5 +14,6 @@ module.exports = {
     ...authCont,
     ...facultadesCont,
     ...alumnosCont,
-    ...profesoresCont
+    ...profesoresCont,
+    ...profesores_x_facultadesCont
 };

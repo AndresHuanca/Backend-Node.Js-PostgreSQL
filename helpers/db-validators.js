@@ -130,16 +130,24 @@ const proFacExiste = async ( pro_x_fac='') => {
     const id_facultad = pro_x_fac.id_facultad;
     // Busco la columna por id_profersor y el id_facultad
     existeProFacFull = await Profesores_x_Facultades.findOne( { where: {id_profesor, id_facultad} })
-
     // Si existen los dos datos envía error 
     if(existeProFacFull){
-        throw new Error( `El Profesor x facultad  ${ id_profesor } - ${ id_facultad } ya esta registrado`)
+        throw new Error( `El Profesor x facultad  ${ id_profesor } - ${ id_facultad } ya esta registrado "o" La actualización requiere datos diferentes`)
     }
 
 }
 
+// Validación de existencia de Profesor_x_Facultad por Id
+const existeProfesor_x_facultadPorId = async ( id_profesor_x_facultad = '' ) => { 
+    // verifficar si el id existe
+    existeProfesor_x_Facultades = await Profesores_x_Facultades.findByPk(id_profesor_x_facultad);
+    if( !existeProfesor_x_Facultades ) {
+        throw new Error( `El id ${ id_profesor_x_facultad } no existe en DB`)
+        
+    }
+};
 
-// Validaciones de Carga de Archivos
+//------------------------------Validaciones de Carga de Archivos---------------------------------------------
 const coleccionesPermitidas =  (coleccion = '', colecciones = [] ) => {
 
     const incluida = colecciones.includes( coleccion );
@@ -161,6 +169,7 @@ module.exports = {
     existeAlumnoPorId,
     existeProfesorPorId,
     proFacExiste,
+    existeProfesor_x_facultadPorId,
     coleccionesPermitidas,
     idExiste,
     emailNoExiste
