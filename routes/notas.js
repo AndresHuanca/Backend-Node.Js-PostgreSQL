@@ -9,18 +9,20 @@ const { validarJWT,
 // import controllers
 const { pro_x_facPut,
         pro_x_facDelete,
-        notasPost } = require('../controllers');
+        notasPost, 
+        notasGet,
+        notasPut,
+        notasDelete} = require('../controllers');
 
-const { existeFacultadPorId,
-        existeProfesorPorId,
-        existeProfesor_x_facultadPorId, 
+const { existeProfesor_x_facultadPorId, 
         existeAlumnoPorId,
-        existeCursoPorId} = require('../helpers');
+        existeCursoPorId,
+        existeNotaPorId} = require('../helpers');
 
 const router = Router();
 
 // Obtener todas los profesores_x_facultad - publico
-// router.get( '/', notasGet );
+router.get( '/', notasGet );
 
 
 // Crear una categoria - privado - cualquier persona with a token validate
@@ -36,19 +38,19 @@ router.post( '/:id_alumno/:id_curso', [
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre
-router.put( '/:id_profesor_x_facultad', [
+router.put( '/:id_nota', [
     validarJWT,
-    check( 'id_profesor_x_facultad' ).custom( existeProfesor_x_facultadPorId ),
+    check( 'id_nota' ).custom( existeNotaPorId ),
     validarCampos
-], pro_x_facPut );
+], notasPut );
 
 // Delete an categoria - Admin
 // que sea un id de mongo
-router.delete( '/:id_profesor_x_facultad', [
+router.delete( '/:id_nota', [
     validarJWT,
-    check( 'id_profesor_x_facultad' ).custom( existeProfesor_x_facultadPorId ),
+    check( 'id_nota' ).custom( existeNotaPorId ),
     validarCampos
-], pro_x_facDelete );
+], notasDelete );
 
 
 module.exports = router;

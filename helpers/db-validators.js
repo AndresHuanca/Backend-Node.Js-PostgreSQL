@@ -1,6 +1,6 @@
 
 //importando modelo usuario //importando modelo categoria
-const { Usuarios, Roles, Tipos_de_Facultades, Facultades, Alumnos } = require('../models');
+const { Usuarios, Roles, Tipos_de_Facultades, Facultades, Alumnos, Notas } = require('../models');
 const Cursos = require('../models/cursos');
 const Profesores = require('../models/profesores');
 const Profesores_x_Facultades = require('../models/profesores_x_facultades');
@@ -160,6 +160,19 @@ const existeCursoPorId = async ( id_curso = '' ) => {
     }
 };
 
+// -----------------------------NOTAS------------------------------------
+
+// Validación de existencia de Profesor_x_Facultad por Id
+const existeNotaPorId = async ( id_nota = '' ) => { 
+    // verifficar si el id existe
+    existeNotas = await Notas.findByPk(id_nota);
+    if( !existeNotas ) {
+        throw new Error( `El id ${ id_nota } no existe en DB`)
+        
+    }
+};
+// -----------------------------------------------------------------------
+
 //------------------------------Validaciones de Carga de Archivos---------------------------------------------
 const coleccionesPermitidas =  (coleccion = '', colecciones = [] ) => {
 
@@ -184,6 +197,7 @@ module.exports = {
     proFacExiste,
     existeProfesor_x_facultadPorId,
     existeCursoPorId,
+    existeNotaPorId,
     coleccionesPermitidas,
     idExiste,
     emailNoExiste

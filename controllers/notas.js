@@ -1,27 +1,31 @@
 const { response } = require('express');
 const { proFacExiste } = require('../helpers');
 
-const { Profesores, Profesores_x_Facultades, Facultades } = require('../models');
+const { Profesores_x_Facultades, Facultades, Alumnos, Cursos, Notas } = require('../models');
 
 
 //POST
 const notasPost = async( req, res = response ) => {
-        
-        // en el body debe venir: id
-        const { id_facultad, id_profesor } = req.params;
 
-        // Establezco id_profesor en "a" sacando de DB
-        const existeProfesor = await Profesores.findOne({where: {id_profesor}})
-        const a = existeProfesor.dataValues.id_profesor;
-        
-        // Establezco id_facultad en "b" sacando de DB
-        const existeFacultad = await Facultades.findByPk(id_facultad)
-        const b = existeFacultad.dataValues.id_facultad;
+        // Extraigo id_alumno ... de params
+        const { nota } = req.body;
 
-        //Crear nueva facultad 
-        const pro_x_facNew = {
-            id_profesor: a,
-            id_facultad: b
+        // Extraigo id_alumno ... de params
+        const { id_alumno, id_curso } = req.params;
+
+        // Establezco id_alumno en "a" sacando de DB
+        const existeAlumno = await Alumnos.findOne({where: {id_alumno}})
+        const a = existeAlumno.dataValues.id_alumno;
+        
+        // Establezco id_curso en "b" sacando de DB
+        const existeCurso = await Cursos.findByPk(id_curso)
+        const b = existeCurso.dataValues.id_curso;
+
+        //Crear nueva Nota 
+        const noteNew = {
+            nota,
+            id_alumno: a,
+            id_curso: b
         };
     
         // creator user of studentNew - Muestra el usuario que creo el alumno
@@ -29,25 +33,23 @@ const notasPost = async( req, res = response ) => {
 
         // -------Validación de existencia unica de Profesores x Facultad-----------------INICIO
         // Busco la columna por id_profersor y el id_facultad
-        existeProFacFull = await Profesores_x_Facultades.findOne( { where: {id_profesor, id_facultad} })
+        existeNota = await Notas.findOne( { where: {id_alumno, id_curso} })
 
         // Si existen los dos datos envía error 
-        if(existeProFacFull){
-            throw new Error( `El Profesor x facultad  ${ id_profesor } - ${ id_facultad } ya esta registrado`)
+        if(existeNota){
+            throw new Error( `La nota   ${ id_alumno } - ${ id_curso } ya esta registrado`)
         }
         // -------Validación de existencia unica de Profesores x Facultad-----------------FIN
         
-        // Crear profesores_x_facultades
-        const pro_x_fac = new Profesores_x_Facultades( pro_x_facNew );
+        // Crear notas
+        const notas = new Notas( noteNew );
 
         // Guardar en DB
-        await pro_x_fac.save();
-
-        // proFacFull: en res.status: Es un ejemplo de concatenación de valores del modelo
+        await notas.save();
 
         // msg
         res.status(201).json({
-            pro_x_fac,
+            notas,
             postUser,
 
         });
@@ -55,19 +57,19 @@ const notasPost = async( req, res = response ) => {
 };
 
 // GET
-const pro_x_facGet = async ( req, res ) => {
+const notasGet = async ( req, res ) => {
 
     try {
-        //show all profesores_x_facultad
-        const pro_x_fac= await Profesores_x_Facultades.findAll({
-            attributes: ['id_profesor_x_facultad', 'id_profesor', 'id_facultad'],
+        //show all notas
+        const notas = await Notas.findAll({
+            attributes: ['id_nota', 'nota', 'id_alumno', 'id_curso'],
         });
-        //all users 
-        const total =  pro_x_fac.length;
+        //all notes 
+        const total =  notas.length;
     
         res.json({
             total,
-            pro_x_fac,
+            notas,
         }); 
         
     } catch (error) {
@@ -79,16 +81,16 @@ const pro_x_facGet = async ( req, res ) => {
 };
 
 // PUT
-const pro_x_facPut = async( req, res ) => {
-
-
-        const { id_profesor_x_facultad } = req.params;
+const notasPut = async( req, res ) => {
+   
+        // Extraigo id_alumno ... de params
+        const { id_nota } = req.params;
     
         // id_desestructurar creado para hacerlo más simple la actualización de variables
         const { id_desescructurar, ...updates } = req.body;
     
         // Validación de update para no modificar id_alumno
-        if(updates.id_profesor_x_facultad){
+        if(updates.id_nota){
             throw new Error( `No se puede modificar el id` );
         }
     
@@ -96,24 +98,26 @@ const pro_x_facPut = async( req, res ) => {
         //creator user of studentNew - Muestra el usuario que actualizo el alumno
         const updateUser = req.usuario.dataValues.codusuario;
     
-        // Para encontrar el alumno
-        const existeIdProfesor_x_Facultad = await Profesores_x_Facultades.findByPk(id_profesor_x_facultad);
+        // Para encontrar La nota
+        await Notas.findByPk(id_nota);
         
-        // -------Validación de existencia unica de Profesores x Facultad-----------------INICIO
+        // -------Validación de existencia unica de Notas-----------------INICIO
         // Extraigo datos del body
-        const id_profesor =updates.id_profesor;
-        const id_facultad =updates.id_facultad;
-        // Busco la columna por id_profesor y el id_facultad
-        existeProFacFull = await Profesores_x_Facultades.findOne( { where: {id_profesor, id_facultad} })
+        const id_alumno =updates.id_alumno;
+        const id_curso =updates.id_curso;
+        const nota = updates.nota;
+
+        // Busco la columna por id_alumno y el id_curso
+        existeNotas = await Notas.findOne( { where: {id_alumno, id_curso, nota} })
 
         // Si existen los dos datos envía error 
-        if(existeProFacFull){
-            throw new Error( `El Profesor x facultad  ${ id_profesor } - ${ id_facultad } La actualización requiere datos diferentes`)
+        if( existeNotas ){
+            throw new Error( `La nota ${ nota } de  ${ id_alumno } - ${ id_curso } La actualización requiere datos diferentes`)
         }
-        // -------Validación de existencia unica de Profesores x Facultad-----------------FIN
+        // -------Validación de existencia unica de Notas-----------------FIN
         
-        // Localizo usuario por Id
-        const updateProFac = await Profesores_x_Facultades.update( updates, { where: { id_profesor_x_facultad } });
+        // Localizo nota por Id
+        await Notas.update( updates, { where: { id_nota } });
 
         res.status( 500 ).json({
             updates,
@@ -123,19 +127,19 @@ const pro_x_facPut = async( req, res ) => {
 }
 
 // DELETE
-const pro_x_facDelete  = async( req, res ) => {
+const notasDelete  = async( req, res ) => {
 
-    const { id_profesor_x_facultad } = req.params;
+    const { id_nota } = req.params;
 
     // borrar fisicamente
-    await Profesores_x_Facultades.destroy({where: { id_profesor_x_facultad }}, { truncate: true });
+    await Notas.destroy({where: { id_nota }}, { truncate: true });
 
     //establecer usuario que hizo ultima modificacion
     //deleteUser - Muestra el usuario que elimino el alumno
     const deleteUser = req.usuario.dataValues.codusuario;
 
     res.json({
-        msg: `El Profesor_x_facultad de id ${id_profesor_x_facultad} eliminado`,
+        msg: `La nota de  id ${ id_nota } eliminado`,
         deleteUser
     });
 
@@ -143,7 +147,7 @@ const pro_x_facDelete  = async( req, res ) => {
 
 module.exports = {
     notasPost,
-    pro_x_facGet,
-    pro_x_facPut,
-    pro_x_facDelete
+    notasGet,
+    notasPut,
+    notasDelete
 };

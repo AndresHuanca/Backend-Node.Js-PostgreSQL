@@ -97,7 +97,7 @@ const pro_x_facPut = async( req, res ) => {
         const updateUser = req.usuario.dataValues.codusuario;
     
         // Para encontrar el alumno
-        const existeIdProfesor_x_Facultad = await Profesores_x_Facultades.findByPk(id_profesor_x_facultad);
+        await Profesores_x_Facultades.findByPk(id_profesor_x_facultad);
         
         // -------Validación de existencia unica de Profesores x Facultad-----------------INICIO
         // Extraigo datos del body
@@ -113,7 +113,7 @@ const pro_x_facPut = async( req, res ) => {
         // -------Validación de existencia unica de Profesores x Facultad-----------------FIN
         
         // Localizo usuario por Id
-        const updateProFac = await Profesores_x_Facultades.update( updates, { where: { id_profesor_x_facultad } });
+        await Profesores_x_Facultades.update( updates, { where: { id_profesor_x_facultad } });
 
         res.status( 500 ).json({
             updates,
