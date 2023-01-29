@@ -7,29 +7,32 @@ const { validarJWT,
         validarCampos } = require('../middlewares');
 
 // import controllers
-const {  
-        pro_x_facPut,
-        pro_x_facDelete, 
-        pro_x_facPost,
-        pro_x_facGet } = require('../controllers');
+const { pro_x_facPut,
+        pro_x_facDelete,
+        notasPost } = require('../controllers');
 
 const { existeFacultadPorId,
         existeProfesorPorId,
-        existeProfesor_x_facultadPorId } = require('../helpers');
+        existeProfesor_x_facultadPorId, 
+        existeAlumnoPorId,
+        existeCursoPorId} = require('../helpers');
 
 const router = Router();
 
 // Obtener todas los profesores_x_facultad - publico
-router.get( '/', pro_x_facGet );
+// router.get( '/', notasGet );
 
 
 // Crear una categoria - privado - cualquier persona with a token validate
-router.post( '/:id_profesor/:id_facultad', [ 
+router.post( '/:id_alumno/:id_curso', [ 
     validarJWT,
-    check( 'id_facultad' ).custom( existeFacultadPorId ),
-    check( 'id_profesor' ).custom( existeProfesorPorId ),
+    check( 'nota', 'La nota es obligatoria' ).not().isEmpty(),
+    check( 'nota', 'La nota es numerica' ).isNumeric(),
+    check( 'nota', 'La nota debe tener maximo 2 numeros' ).isLength({min :0, max:2}),
+    check( 'id_alumno' ).custom( existeAlumnoPorId ),
+    check( 'id_curso' ).custom( existeCursoPorId ),
     validarCampos
-], pro_x_facPost );
+], notasPost );
 
 // Actualizar - privado - cualquier persona with a token validate
 // minimo venga el nombre

@@ -6,7 +6,8 @@ const facultadesCont = require('./facultades');
 const alumnosCont = require('./alumnos');
 const profesoresCont = require('./profesores');
 const profesores_x_facultadesCont = require('./profesores_x_facultades');
-
+const notas = require('./notas');
+const cursos = require('./cursos');
 
 
 module.exports = {
@@ -15,5 +16,7 @@ module.exports = {
     ...facultadesCont,
     ...alumnosCont,
     ...profesoresCont,
-    ...profesores_x_facultadesCont
+    ...profesores_x_facultadesCont,
+    ...notas,
+    ...cursos,
 };

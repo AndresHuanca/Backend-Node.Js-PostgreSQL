@@ -17,9 +17,7 @@ const { existeAlumnoPorId, existeProfesorPorId } = require('../helpers');
 
 const router = Router();
 
-// {{url}}/api/categorias
-
-// Obtener todas las categorias - publico
+// Obtener todos los cursos - publico
 router.get( '/', profesoresGet );
 
 

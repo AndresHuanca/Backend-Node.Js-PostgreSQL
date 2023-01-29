@@ -118,13 +118,13 @@ const alumnosPut = async( req, res ) => {
         const updateUser = req.usuario.dataValues.codusuario;
     
         // Para encontrar el alumno
-        const existeIdAlumno = await Alumnos.findByPk(id_alumno);
+        await Alumnos.findByPk(id_alumno);
     
         // Localizo usuario por Id
         await Alumnos.update( updates, { where: { id_alumno } });
     
         res.status( 500 ).json({
-            existeIdAlumno,
+            updates,
             updateUser
         });
     } catch (error) {
