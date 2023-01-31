@@ -4,73 +4,87 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sign-in</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portafolio Andres Huanca Namuche </title>
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <!-- bootstrap movile -->
 </head>
 <body>
+    <Header style="background-color: rgb(113, 124, 187)">
+        <div class="container w-auto p-3">
+            <nav>
+                <ul class="navbarList"> <!--Lista no ordenada -->
+                    <div class="row ">
+                        <div class=" col-sm- col-md-3 col-lg-4 col-xl-4  ">
+                            <li class="active" id="inicioLink"1> <!--Elementos de una lista -->
+                            <a href="#inicio" onclick="navigateHandler('inicioLink')"
+                                class="text-warning"    
+                            ><strong><h3>INICIO</h3></strong></a
+                            >
+                        </div>
+                        <div class=" col-sm- col-md-3 col-lg-4 col-xl-4 ">
+                            <li class="active" id="inicioLink"> <!--Elementos de una lista -->
+                            <a href="#inicio" onclick="navigateHandler('inicioLink')"
+                                class="text-warning"    
+                            ><strong><h3>PROYECTOS</h3></strong></a
+                            >
+                        </div>
+                        <div class=" col-sm- col-md-3 col-lg-4 col-xl-4 ">
+                            <li class="active" id="inicioLink"> <!--Elementos de una lista -->
+                                <a href="#inicio" onclick="navigateHandler('inicioLink')"
+                                    class="text-warning"    
+                                ><strong><h3>CONTACTO</h3></strong></a
+                                >
+                        </div>
+                    </div>
+                </ul>             
+            </nav>
+        </div>
+    </Header>
 
-    <h1> Google Sign-in</h1>
-    <hr>
-
-    <div id="g_id_onload"
-        data-client_id="91803307281-v17vgseouqiqac0ephqev7n0bo1shush.apps.googleusercontent.com"
-        data-auto_prompt="false"
-        data-callback="handleCredentialResponse",
-        data-auto_select="true">
+    <div class=" my-5"></div>
+    
+    <div class="container ">
+        <div class="row">
+            <div  class=" col-sm-4 col-md-4 col-lg-4 col-xl-4 ">
+                <img  src="assets/121108749_3408354035885422_6328210040091492220_n (3).png" class="img-fluid img-thumbnail " alt="ImageProfile">
+            </div>
+            <div class=" col-sm-8 col-md-8 col-lg-8 col-xl-8">
+                <h1><strong>Hola, Soy Andres Huanca Namuche</strong></h1> <!--Title -->
+                <h3><p class="text-left">Estudiante en Universidad Peruana Unión<img  src="assets/04 (1).jpg"></p></h3>
+                <h3><p class="text-left">8° Ciclo</h3>
+                <div>
+                    <button type="button" class="btn btn-outline-success"><strong>Github </strong><img  
+                            src="assets/github (1).svg" class="img-fluid img-thumbnail " alt="ImageProfile">
+                    </button>
+                    <button type="button" class="btn btn-outline-primary"><strong>LinkedIn </strong><img  
+                        src="assets/linkedin (1).svg" class="img-fluid img-thumbnail " alt="ImageProfile">
+                    </button>
+                    <button type="button" class="btn btn-outline-success"><strong>Descargar CV </strong><img  
+                        src="assets/file-text.svg" class="img-fluid img-thumbnail " alt="ImageProfile">
+                    </button>   
+                </div>
+                <div   class="container my-3" >
+                    <p class="text-center fs-5">Estudiante de Ingeniería de Sistemas, con un gran interés en la investigación 
+                        y desarrollo backend en Node.js. Con capacidad para aprender y aplicar mis conocimientos al ámbito profesional
+                        , en busca de una oportunidad laboral en la que pueda desarrollar mis habilidades y adquirir experiencia.</p>
+                        
+                </div>
+            </div>  
+        </div>
     </div>
-    <div class="g_id_signin"
-        data-type="standard"
-        data-size="large"
-        data-theme="outline"
-        data-text="sign_in_with"
-        data-shape="rectangular"
-        data-logo_alignment="left">
+
+    <div class=" my-5"></div>
+    
+    <div class="container ">
+        <div class="row">
+            <div class=" col-sm-4 col-md-4 col-lg-8 col-xl-12">
+                <h1 class="text-center fs-"><strong>HABILIDADES</strong></h1> <!--Title --> 
+            </div>  
+        </div>
     </div>
 
-    <button id="google_signout">
-        Signout
-
-    </button>
-
-    <!-- https://developers.google.com/identity/gsi/web/guides/display-button#html -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-    <script>
-        function handleCredentialResponse(response) {
-        
-            // Google Token : ID_TOKEN
-            // console.log('id_token', response.credential);
-            const body = { id_token: response.credential };
-
-            fetch('http://localhost:8080/api/auth/google', {
-
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify( body )
-            })
-                .then( resp => resp.json() )
-                .then( resp => {
-                    console.log( resp )
-                    localStorage.setItem('email', resp.usuario.correo )
-                })
-                .catch( console.warn );
-            
-        
-        }
-
-        const button = document.getElementById('google_signout');
-        button.onclick = async() => {
-            console.log(google.accounts.id)
-            google.accounts.id.disableAutoSelect()
-
-            google.accounts.id.revoke( localStorage.getItem( 'email'), done =>{
-                localStorage.clear(),
-                location.reload();
-            })
-        };
-
-    </script>
 
 </body>
 </html>

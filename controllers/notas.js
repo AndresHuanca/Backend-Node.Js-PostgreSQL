@@ -3,7 +3,6 @@ const { proFacExiste } = require('../helpers');
 
 const { Profesores_x_Facultades, Facultades, Alumnos, Cursos, Notas } = require('../models');
 
-
 //POST
 const notasPost = async( req, res = response ) => {
 
