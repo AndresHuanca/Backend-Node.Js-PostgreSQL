@@ -12,8 +12,9 @@ const esAdminRole = ( req = request, res = response, next ) => {
     }
     // esta info ya esta en el validar-jwt y usuarios.delete
     const { id_rol, nombre } = req.usuario;
+    // Valid en en.v
     // UUID , id_rol establecido en DB
-    if( id_rol!== '77bdb138-9c03-44dc-9edf-a615bd60143a' ) {
+    if( id_rol!== process.env.VAL_ADMIN_ROL ) {
         console.log(req.usuario);
         return res.status( 401 ).json({
             msg: `${ nombre } no es administrador nott puede hacer esto`

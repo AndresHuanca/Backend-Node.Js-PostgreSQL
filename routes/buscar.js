@@ -1,10 +1,10 @@
-const { Router } = require('express');
-// Import Controller
-const { buscar } = require('../controllers/buscar');
+// const { Router } = require('express');
+// // Import Controller
+// const { buscar } = require('../controllers/buscar');
 
-const router = Router();
+// const router = Router();
 
-// GET -Busquedas
-router.get( '/:coleccion/:termino', buscar );
+// // GET -Busquedas
+// router.get( '/:coleccion/:termino', buscar );
 
-module.exports = router;
+// module.exports = router;

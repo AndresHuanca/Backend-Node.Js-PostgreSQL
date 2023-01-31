@@ -49,11 +49,11 @@ class Server {
         this.app.use( express.static('public') );
 
         //FileUpload - carga de archivos
-        this.app.use(fileUpload({
-            useTempFiles : true,
-            tempFileDir : '/tmp/',
-            createParentPath: true //crea las carpetas donde guardar archivos automaticamente
-        })); 
+        // this.app.use(fileUpload({
+        //     useTempFiles : true,
+        //     tempFileDir : '/tmp/',
+        //     createParentPath: true //crea las carpetas donde guardar archivos automaticamente
+        // })); 
 
     }
 
@@ -62,7 +62,7 @@ class Server {
         
         this.app.use(  this.paths.auth,                    require('../routes/auth') );
         this.app.use(  this.paths.alumnos,                 require('../routes/alumnos') );
-        this.app.use(  this.paths.buscar,                  require('../routes/buscar') );
+        // this.app.use(  this.paths.buscar,                  require('../routes/buscar') );
         this.app.use(  this.paths.cursos,                  require('../routes/cursos') );
         this.app.use(  this.paths.facultades,              require('../routes/facultades') );
         this.app.use(  this.paths.notas,                   require('../routes/notas') );

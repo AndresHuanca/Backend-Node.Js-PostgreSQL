@@ -1,9 +1,13 @@
 const { Sequelize } = require('sequelize')
 
-
-const db =new Sequelize('test', 'postgres', '123456*', {
-    host: 'localhost',
-    dialect: 'postgres',
+// credenciales en el .env
+const db =new Sequelize(
+    process.env.NAME_DB_POSTGRESQL,
+    process.env.USERNAME_DB_POSTGRESQL,
+    process.env.PASSWORD_DB_POSTGRESQL,
+    {
+    host: process.env.HOST_DB_POSTGRESQL,
+    dialect: process.env.DIALECT_DB_POSTGRESQL,
     define: {
         timestamps: false
     }
