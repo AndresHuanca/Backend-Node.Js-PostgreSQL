@@ -42,7 +42,7 @@ const usuariosGet = async(req, res = response ) => {
 
 // post- creacion 
 const usuariosPost = async(req, res = response) => {
-    try {
+    // try {
         
         // una forma de enviar todo {google, ...resto
         const { estado, ...resto} = req.body;
@@ -90,13 +90,13 @@ const usuariosPost = async(req, res = response) => {
             
         });
         
-    } catch (error) {
+    // } catch (error) {
         
-        if(error instanceof Error){
-            return res.status(500).json({ message: error.message });
-        }
+    //     if(error instanceof Error){
+    //         return res.status(500).json({ message: error.message });
+    //     }
 
-    }
+    // }
 
 }
 
