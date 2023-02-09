@@ -14,7 +14,7 @@ const Roles = db.define ( 'roles', {
     rol:{
         type: DataTypes.STRING,
     }
-});
+},{timestamps: false});
 
 
 module.exports = Roles;

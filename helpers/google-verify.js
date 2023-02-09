@@ -1,7 +1,8 @@
+// https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
 const { OAuth2Client } = require('google-auth-library');
 
 const client = new OAuth2Client( process.env.GOOGLE_CLIENT_ID );
-
+// recibe en token
 async function googleVerify( token = '' ) {
     const ticket = await client.verifyIdToken({
     idToken: token,
@@ -11,12 +12,16 @@ async function googleVerify( token = '' ) {
     });
 
     // const payload = ticket.getPayload(); 
-    const { name, picture, email } = ticket.getPayload(); 
+    // console.log( payload )
+    // jti = uuid unique od gmail google
+    const { name, picture, email, jti } = ticket.getPayload(); 
+
 
     return {
         nombre: name,
         img: picture,
-        correo: email
+        email,
+        jti
     };
 }
 

@@ -3,7 +3,7 @@ const { response } = require('express');
 const bcryptjs = require('bcryptjs'); 
 
 //para validar se utiliza imortar el modelo del usuario
-const {Usuarios} = require('../models');
+const {Usuarios, Roles} = require('../models');
 // import de helpers
 const { generarJWT, googleVerify } = require('../helpers');
 
@@ -18,16 +18,16 @@ const login = async( req, res = response ) => {
         const usuario = await Usuarios.findOne({ where: {email} });
         if( !usuario ) {
             return res.status(400).json({ 
-                msg: 'Email no invalido'
+                msg: 'Email no se encuentra en la base de datos'
             });
         }
 
         //verificar si el usuario esta activo
-        if( !usuario.estado ) {
-            return res.status(400).json({ 
-                msg: 'Cuenta en estado false: "Hable con el administrador"'
-            });
-        }
+        // if( !usuario.estado ) {
+        //     return res.status(400).json({ 
+        //         msg: 'Cuenta en estado false: "Hable con el administrador"'
+        //     });
+        // }
         
         // Verificar si contraseña es correcta
         const validPassword = bcryptjs.compareSync( password, usuario.password );
@@ -56,59 +56,54 @@ const login = async( req, res = response ) => {
 };
 
 // Controller Login Google Sign-in
+// Se necesita npm install google-auth-library --save
+
 const googleSignIn = async(req, res = response) => {
 
     const { id_token } = req.body;
 
     try {
 
-        // const googleUser = await googleVerify( id_token );
-        const { correo, nombre, img } = await googleVerify( id_token );
- 
+        // const googleUser = await googleVerify(id_token);
         // console.log(googleUser);
+        const { nombre, img, email, jti } = await googleVerify(id_token);
 
-        let usuario = await Usuario.findOne({ correo });
-        
-        // correo no existe validacion
-        if ( !usuario ) {
-            // Tengo que crearlo
-            const data = { 
+        let usuario = await Usuarios.findOne({ where: {email} } )
+
+        if( !usuario ) {
+            // Si usuario no existe crear uno nuevo
+            const existeRol = await Roles.findOne( { where: {rol:'USER-ROL'} } );
+            const a = existeRol.dataValues.id_rol;
+
+            const data = {
                 nombre,
-                correo,
-                rol: 'USER_ROLE', //Asigna un rol por default 
-                password: ':p',
+                password: jti,
+                email,
+                google: true,
                 img,
-                google: true
+                id_rol: a,
             };
-     
-            usuario = new Usuario( data );
-            await usuario.save();
+            //encriptar la contraseña
+            const salt = bcryptjs.genSaltSync();
+            data.password = bcryptjs.hashSync( data.password, salt );
 
+        usuario = new Usuarios(data);
+        //guardar en DB
+        await usuario.save();
         }
 
-        // Si el usuario su estado en DB en estado de false
-        if( !usuario.estado ) {
-            return res.status( 401 ).json({
-                msg: 'hable con el administrador, usuario en estado false'
-            });
-        }
+        // Generar JWT
+        const token = await generarJWT( usuario.codusuario );
+
         
-
-        // Generar JWT 
-        let token = await generarJWT( usuario.id );
-
         res.json({
             usuario,
             token
         });
-
     } catch (error) {
-        console.log(error);
-
-        return res.status(400).json({
-            ok: false,
-            msg: 'El token no se pudo verificar'
-        });
+        if(error instanceof Error){
+            return res.status(500).json({ message: error.message });
+        }
         
     }
 

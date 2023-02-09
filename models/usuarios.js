@@ -25,9 +25,12 @@ const Usuarios = db.define ( 'usuarios', {
         type: DataTypes.STRING, 
         unique: true, //correo unico
     },
-    estado: { 
+    google: { 
         type: DataTypes.BOOLEAN,  
         default: true
+    },
+    img: { 
+        type: DataTypes.STRING, 
     },
     id_rol:{
         type: DataTypes.UUID,
@@ -35,9 +38,9 @@ const Usuarios = db.define ( 'usuarios', {
             model: 'roles',
             key: 'id_rol'
         },
-    }
-    
-});
+    },
+}, {timestamps: false}
+);
 
 // sobreescribir funcion toJSON para no enviar el password- codusuario-id_rol
 Usuarios.prototype.toJSON = function () {

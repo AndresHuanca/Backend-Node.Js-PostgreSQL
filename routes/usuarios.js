@@ -46,7 +46,7 @@ router.put('/:codusuario',[
         check( 'rol' ).custom( esRoleValido ),
         check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea ,
         check( 'codusuario' ).custom( existeUsuarioPorId ),
-        validarJWT,
+        // validarJWT,
         validarCampos
 ], usuariosPut );
 

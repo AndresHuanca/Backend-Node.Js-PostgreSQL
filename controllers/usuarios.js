@@ -20,7 +20,7 @@ const usuariosGet = async(req, res = response ) => {
                 as: 'rols',
                 attributes:['rol']
             }],
-            attributes: ['nombre', 'password', 'email', 'estado'],
+            attributes: ['nombre', 'password', 'email', 'google', 'img'],
         });
         //all users 
         const total =  usuarios.length;
@@ -45,7 +45,7 @@ const usuariosPost = async(req, res = response) => {
     // try {
         
         // una forma de enviar todo {google, ...resto
-        const { estado, ...resto} = req.body;
+        const { google, ...resto} = req.body;
         // { Para encontrar id_rol con where
         // const [existeIdRol] = await Roles.findAll({   
             //     where:{ rol }
@@ -75,7 +75,7 @@ const usuariosPost = async(req, res = response) => {
             nombre: resto.nombre,
             password: resto.password,
             email: resto.email,
-            estado: true,
+            google: true,
             id_rol
         };
         
@@ -103,11 +103,11 @@ const usuariosPost = async(req, res = response) => {
 //put - Actualizar
 const usuariosPut = async(req = request, res = response) => {
     
-    try {    
+    // try {    
         //para dinamico
         const { codusuario } = req.params;
         //desustructurar (estado no se puede cambiar)
-        const { estado, ...updates } = req.body;
+        const { google, ...updates } = req.body;
 
          //--Test para ver usuarios.estado
         // const user = await Usuarios.findOne( { where: { email: updates.email } })
@@ -142,12 +142,12 @@ const usuariosPut = async(req = request, res = response) => {
             updates,   
         });
 
-    } catch (error) {
+    // } catch (error) {
 
-        if(error instanceof Error){
-            return res.status(500).json({ message: error.message });
-        }
-    }
+    //     if(error instanceof Error){
+    //         return res.status(500).json({ message: error.message });
+    //     }
+    // }
 
 };
 
