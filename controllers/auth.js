@@ -110,7 +110,21 @@ const googleSignIn = async(req, res = response) => {
 
 };
 
+// Renueva el token para el fronten una vez iniciado sesión
+const renovarToken = async( req, res = response) => {
+
+    const { usuario } = req;
+     // Generar el JWT
+    const token = await generarJWT( usuario.id );
+
+    res.json({
+        usuario,
+        token
+    });
+}
+
 module.exports = {
     login,
-    googleSignIn
+    googleSignIn,
+    renovarToken
 };
