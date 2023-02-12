@@ -32,9 +32,10 @@ router.get('/', usuariosGet );
 //post  - middleware segundo argumento , crear errores- crear
 router.post('/', [
         //validaciones de los argumentos enviados en post
-        check( 'nombre', 'El nombre  no es valido' ).notEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
+        check( 'nombre', 'El nombre  es obligatorio' ).notEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
+        check( 'apellidos', 'Los apellidos son obligatorios' ).notEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
         check( 'password', 'La contraseña es obligatoria' ).notEmpty(),
-        check( 'password', 'El password debe ser ma de 6 letras' ).isLength( { min: 6 } ), //tamaño mino de 6
+        check( 'password', 'El password debe ser mas de 6 letras' ).isLength( { min: 6 } ), //tamaño mino de 6
         check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
         check( 'email' ).custom( emailExiste ),
         check( 'rol' ).custom( esRoleValido ),

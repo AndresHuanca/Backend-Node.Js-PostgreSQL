@@ -14,7 +14,10 @@ const Usuarios = db.define ( 'usuarios', {
     nombre: { 
         
         type: DataTypes.STRING,
-        unique: true,
+    },
+    apellidos: { 
+        
+        type: DataTypes.STRING,
     },
     password: {  
         type: DataTypes.STRING, 

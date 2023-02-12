@@ -42,7 +42,6 @@ const usuariosGet = async(req, res = response ) => {
 
 // post- creacion 
 const usuariosPost = async(req, res = response) => {
-    // try {
         
         // una forma de enviar todo {google, ...resto
         const { google, ...resto} = req.body;
@@ -73,9 +72,11 @@ const usuariosPost = async(req, res = response) => {
         // Variables envio por defecto estado: true
         const userNew = {
             nombre: resto.nombre,
+            apellidos: resto.apellidos,
             password: resto.password,
             email: resto.email,
             google: true,
+            img: resto.img,
             id_rol
         };
         
@@ -89,14 +90,6 @@ const usuariosPost = async(req, res = response) => {
             usuario,
             
         });
-        
-    // } catch (error) {
-        
-    //     if(error instanceof Error){
-    //         return res.status(500).json({ message: error.message });
-    //     }
-
-    // }
 
 }
 
