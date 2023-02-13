@@ -1,34 +1,16 @@
-
-/* Image profile */
-.imgProfile{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+/* Imagen centrad en body */
+body{
+    background-image: url('../assets/cosh3nee9nkfwnsmpn9p.webp');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
 }
-/* LOGOS HTML JS CSS - BOOSTRAP */
-.logos{
-    width: 25%;
-    height: 25%;
-}
-
-.logos02{
-    width: 32%;
-    height: 32%;
-}
-
-.logos03{
-    width: 42%;
-    height: 42%;
-}
-.logos04{
-    width: 70%;
-    height: 70%;
-}
-/* LOGOS HTML JS CSS - BOOSTRAP */
 
 /* CENTRAR DIV PADRE E HIJO */
 .divCenter01{
-    text-align:center;
+    margin: 0 auto;
+    padding: auto;
 }
 
 .divCenter02{
@@ -36,16 +18,3 @@
 }
 /* CENTRAR DIV PADRE E HIJO */
 
-
-/* .row-centered {
-    text-align:center;
-    margin:0 auto;
-}
-.col-centered {
-    display:block;
-    float:none;
-}
-.pos {
-    position: relative;
-    top: 240px;
-} */

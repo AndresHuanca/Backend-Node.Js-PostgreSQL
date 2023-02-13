@@ -66,7 +66,7 @@ const googleSignIn = async(req, res = response) => {
 
         // const googleUser = await googleVerify(id_token);
         // console.log(googleUser);
-        const { nombre, img, email, jti } = await googleVerify(id_token);
+        const { nombre, apellidos, img, email, password } = await googleVerify(id_token);
 
         let usuario = await Usuarios.findOne({ where: {email} } )
 
@@ -74,10 +74,14 @@ const googleSignIn = async(req, res = response) => {
             // Si usuario no existe crear uno nuevo
             const existeRol = await Roles.findOne( { where: {rol:'USER-ROL'} } );
             const a = existeRol.dataValues.id_rol;
-
+            // Create password dinamc with JWT
+            const passwordJWT = await generarJWT(password);
+            
+            // Asginando new password
             const data = {
                 nombre,
-                password: jti,
+                apellidos,
+                password: passwordJWT,
                 email,
                 google: true,
                 img,
@@ -87,14 +91,13 @@ const googleSignIn = async(req, res = response) => {
             const salt = bcryptjs.genSaltSync();
             data.password = bcryptjs.hashSync( data.password, salt );
 
-        usuario = new Usuarios(data);
-        //guardar en DB
-        await usuario.save();
+            usuario = new Usuarios(data);
+            //guardar en DB
+            await usuario.save();
         }
 
         // Generar JWT
         const token = await generarJWT( usuario.codusuario );
-
         
         res.json({
             usuario,
@@ -115,7 +118,7 @@ const renovarToken = async( req, res = response) => {
 
     const { usuario } = req;
      // Generar el JWT
-    const token = await generarJWT( usuario.id );
+    const token = await generarJWT( usuario.codusuario);
 
     res.json({
         usuario,

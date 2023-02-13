@@ -13,15 +13,17 @@ async function googleVerify( token = '' ) {
 
     // const payload = ticket.getPayload(); 
     // console.log( payload )
+    
     // jti = uuid unique od gmail google
-    const { name, picture, email, jti } = ticket.getPayload(); 
+    const { given_name, family_name, picture, email, jti } = ticket.getPayload(); 
 
 
     return {
-        nombre: name,
+        nombre: given_name,
+        apellidos: family_name,
         img: picture,
         email,
-        jti
+        password: jti
     };
 }
 
