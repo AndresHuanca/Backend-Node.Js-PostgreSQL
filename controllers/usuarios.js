@@ -114,6 +114,12 @@ const usuariosPut = async(req = request, res = response) => {
         if(updates.codusuario){
             throw new Error( `No se puede modificar el id` );
         }
+
+        // Manejo de Roles mediante DB
+        // Validación de update para no modificar el rol ADMIN ROL
+        if(updates.rol === 'ADMIN-ROL'){
+            throw new Error( `No se puede modificar el rol` );
+        }
         
         const rol = updates.rol;
         // Para encontrar el rol y id
