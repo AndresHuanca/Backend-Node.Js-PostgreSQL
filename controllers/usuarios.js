@@ -183,19 +183,19 @@ const usuariosDelete = async(req, res) => {
 const usuariosPatch = async(req = request, res = response) => {
     
 
-        //para dinamico
-        const { codusuario } = req.params;
-        //desustructurar (estado no se puede cambiar)
-        const { nombre, apellidos, email } = req.body;
-        
-        // Localizo usuario por Id
-        await Usuarios.update( {nombre, apellidos, email}, { where: { codusuario } });
+    //para dinamico
+    const { codusuario } = req.params;
+    //desustructurar (estado no se puede cambiar)
+    const { nombre, apellidos, email } = req.body;
+    
+    // Localizo usuario por Id
+    await Usuarios.update( {nombre, apellidos, email}, { where: { codusuario } });
 
-        res.status(500).json({
-            nombre,
-            apellidos,
-            email   
-        });
+    res.status(500).json({
+        nombre,
+        apellidos,
+        email   
+    });
 
 };
 
