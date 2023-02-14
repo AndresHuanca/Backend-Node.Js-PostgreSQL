@@ -61,6 +61,10 @@ router.delete('/:codusuario', [
 ], usuariosDelete );
 
 //patch
-// router.patch('/', usuariosPatch );
+router.patch('/:codusuario',[
+        check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea ,
+        check( 'codusuario' ).custom( existeUsuarioPorId ),
+        validarCampos
+], usuariosPatch );
 
 module.exports = router;
