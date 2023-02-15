@@ -63,6 +63,7 @@ router.delete('/:codusuario', [
 //patch
 router.patch('/:codusuario',[
         check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea ,
+        check( 'email' ).custom( emailExiste ),
         check( 'codusuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosPatch );
