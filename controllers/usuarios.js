@@ -20,7 +20,7 @@ const usuariosGet = async(req, res = response ) => {
                 as: 'rols',
                 attributes:['rol']
             }],
-            attributes: ['nombre', 'password', 'email', 'google', 'img'],
+            attributes: ['nombre', 'password', 'email', 'google', 'img', 'codusuario'],
         });
         //all users 
         const total =  usuarios.length;
