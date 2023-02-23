@@ -10,7 +10,8 @@ cloudinary.config( process.env.CLOUDINARY_URL);
 const { response } = require('express');
 const { subirArchivo } = require('../helpers');
 // Import Models
-const { Usuario, Producto } = require('../models');
+const { Usuarios, Alumnos } = require('../models');
+const { col } = require('sequelize');
 
 
 
@@ -36,13 +37,12 @@ const cargarArchivos = async( req, res = response ) => {
 const actualizarImagen = async( req, res ) => {
 
     const { coleccion, id } = req.params;
-
     let modelo;
     
     // Validar si existe id and name of colection  
     switch ( coleccion ) {
         case 'usuarios': 
-            modelo = await Usuario.findById( id );
+            modelo = await Usuarios.findByPk(id);
             if( !modelo ) {
                 return res.status( 400 ).json({ 
                     msg: `No se encontro Usuario con ese Id ${ id }`
@@ -51,18 +51,18 @@ const actualizarImagen = async( req, res ) => {
 
             break;
 
-        case 'productos': 
-            modelo = await Producto.findById( id );
-            if( !modelo ) {
+        case 'alumnos': 
+            modelo = await Alumnos.findByPk(id);
+        if( !modelo ) {
                 return res.status( 400 ).json({ 
-                    msg: `No se encontro Producto con ese Id ${ id }`
+                    msg: `No se encontro Alumno con ese Id ${ id }`
                 });
             }
             
             break;
     
         default:
-            return res.status( 500 ).json({ msg: 'Se me olvido validar esto'} );
+            return res.status( 500 ).json({ msg: 'Se me olvido validar esto - controller upload actualizar imagen-'} );
     }
     
     //Clean image previas
@@ -100,48 +100,48 @@ const actualizarImagenCloudinary = async( req, res ) => {
     // Validar si existe id and name of colection  
     switch ( coleccion ) {
         case 'usuarios': 
-            modelo = await Usuario.findById( id );
-            if( !modelo ) {
-                return res.status( 400 ).json({ 
-                    msg: `No se encontro Usuario con ese Id ${ id }`
-                });
-            }
+        modelo = await Usuarios.findByPk(id);
+        if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro Usuario con ese Id ${ id }`
+            });
+        }
 
-            break;
+        break;
 
-        case 'productos': 
-            modelo = await Producto.findById( id );
-            if( !modelo ) {
-                return res.status( 400 ).json({ 
-                    msg: `No se encontro Producto con ese Id ${ id }`
-                });
-            }
-            
-            break;
+    case 'alumnos': 
+        modelo = await Alumnos.findByPk(id);
+    if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro Alumno con ese Id ${ id }`
+            });
+        }
+        
+        break;
     
         default:
             return res.status( 500 ).json({ msg: 'Se me olvido validar esto'} );
     }
-    
     //Clean image previas
     if( modelo.img ) {
         // desustructurar
         const nombreArr = modelo.img.split('/');
         const nombre = nombreArr[ nombreArr.length - 1 ];
         const [ public_id ] = nombre.split('.');
-        cloudinary.uploader.destroy( public_id );
-    
+        cloudinary.uploader.destroy( `RestServer-NodeJs/${coleccion}/${public_id}` );
+        // console.log( [public_id] );    
     } 
 
     // extraer de req.files.archivo sus datos
     const { tempFilePath } = req.files.archivo;
     // Dentro de tempFilePath existe secure_url
-    // const { secure_url } = await cloudinary.uploader.upload( tempFilePath ); clase
+    // const { secure_url } = await cloudinary.uploader.upload( tempFilePath ); 
 
-    const {secure_url} = await cloudinary.uploader.upload(tempFilePath,{folder:`RestServer NodeJs/${coleccion}`} );
+    const {secure_url} = await cloudinary.uploader.upload(tempFilePath,{folder:`RestServer-NodeJs/${coleccion}`} );
 
     // Asignar
     modelo.img = secure_url;
+    // console.log( secure_url)
 
     await modelo.save();
 
@@ -160,24 +160,24 @@ const mostrarImagen = async ( req, res ) => {
 
     switch ( coleccion ) {
         case 'usuarios': 
-            modelo = await Usuario.findById( id );
-            if( !modelo ) {
-                return res.status( 400 ).json({ 
-                    msg: `No se encontro Usuario con ese Id ${ id }`
-                });
-            }
+        modelo = await Usuarios.findByPk(id);
+        if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro Usuario con ese Id ${ id }`
+            });
+        }
 
-            break;
+        break;
 
-        case 'productos': 
-            modelo = await Producto.findById( id );
-            if( !modelo ) {
-                return res.status( 400 ).json({ 
-                    msg: `No se encontro Producto con ese Id ${ id }`
-                });
-            }
-            
-            break;
+    case 'alumnos': 
+        modelo = await Alumnos.findByPk(id);
+    if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro Alumno con ese Id ${ id }`
+            });
+        }
+        
+        break;
     
         default:
             return res.status( 500 ).json({ msg: 'Se me olvido validar esto'} );
@@ -202,7 +202,6 @@ const mostrarImagen = async ( req, res ) => {
     // // Cuando no existe image
     // res.json({ msg: 'falta place holder'})
 };
-
 
 
 

@@ -54,7 +54,7 @@ router.put('/:codusuario',[
 //delete
 router.delete('/:codusuario', [
         validarJWT,
-        esAdminRole, //Para que solo el administrador elimine
+        // esAdminRole, //Para que solo el administrador elimine
         // tieneRole('ADMIN-ROL', 'USER-ROL'),
         check( 'codusuario' ).custom( existeUsuarioPorId ),
         validarCampos
@@ -62,8 +62,9 @@ router.delete('/:codusuario', [
 
 //patch
 router.patch('/:codusuario',[
+        validarJWT,
         check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea ,
-        check( 'email' ).custom( emailExiste ),
+        // check( 'email' ).custom( emailExiste ), implementado en db indice email
         check( 'codusuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosPatch );

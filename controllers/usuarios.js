@@ -20,7 +20,7 @@ const usuariosGet = async(req, res = response ) => {
                 as: 'rols',
                 attributes:['rol']
             }],
-            attributes: ['nombre', 'password', 'email', 'google', 'img', 'codusuario'],
+            attributes: ['nombre', 'apellidos', 'password', 'email', 'google', 'img', 'codusuario'],
         });
         //all users 
         const total =  usuarios.length;
@@ -117,9 +117,9 @@ const usuariosPut = async(req = request, res = response) => {
 
         // Manejo de Roles mediante DB
         // Validación de update para no modificar el rol ADMIN ROL
-        if(updates.rol === 'ADMIN-ROL'){
-            throw new Error( `No se puede modificar el rol` );
-        }
+        // if(updates.rol === 'ADMIN-ROL'){
+        //     throw new Error( `No se puede modificar el rol` );
+        // }
         
         const rol = updates.rol;
         // Para encontrar el rol y id
