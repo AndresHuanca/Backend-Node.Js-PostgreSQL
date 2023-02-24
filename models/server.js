@@ -41,12 +41,9 @@ class Server {
     middlewares() {
         // list cors permitidos
         const whitelist =[ 
-                           'https://login-api-nodejspostgresql-production.up.railway.app', 
                             'http://localhost:3000',
-                            'https://railway.app',
-                            'https://portafolio-andres-huanca-namuche-production.up.railway.app',
-                            'https://portafolio-andres-huanca-namuche-production.up.railway.app/api/uploads/usuarios',
-                            'https://login-api-nodejspostgresql-production.up.railway.app/views/users/ingresoExitoso.html'
+                            'https://login-api-nodejspostgresql-production.up.railway.app'
+            
                         ];
         //cors
         this.app.use( cors({origin: whitelist}) );
