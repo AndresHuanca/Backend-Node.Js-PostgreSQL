@@ -22,7 +22,7 @@ router.post( '/', [
 
 // PUT - actualizar Archivo
 router.put( '/:coleccion/:id', [
-    validarJWT,
+    // validarJWT,
     validarArchivoSubir,
     check( 'id', 'No es un Id Valido' ).isUUID(),
     check( 'coleccion').custom( c => coleccionesPermitidas( c, [ 'usuarios', 'alumnos' ]) ),
@@ -32,7 +32,7 @@ router.put( '/:coleccion/:id', [
 
 // GET - Display Image
 router.get( '/:coleccion/:id', [
-    validarJWT,
+    // validarJWT,
     check( 'id', 'No es un Id Valido' ).isUUID(),
     check( 'coleccion').custom( c => coleccionesPermitidas( c, [ 'usuarios', 'alumnos' ]) ),
     validarCampos

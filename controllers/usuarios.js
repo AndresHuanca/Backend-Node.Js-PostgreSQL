@@ -188,6 +188,19 @@ const usuariosPatch = async(req = request, res = response) => {
     //desustructurar (estado no se puede cambiar)
     const { nombre, apellidos, email } = req.body;
     
+    //Validacion de email repetido
+    existeEmail = await Usuarios.findOne( { where: {codusuario} });
+
+    if(existeEmail==email){
+        
+    }
+    
+    console.log(existeEmail.email);
+
+    // if( existeEmail ) {
+    //     throw new Error( `El email ${ email } ya esta registrado` );
+    // }  
+    
     // Localizo usuario por Id
     await Usuarios.update( {nombre, apellidos, email}, { where: { codusuario } });
 

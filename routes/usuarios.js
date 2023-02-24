@@ -62,9 +62,9 @@ router.delete('/:codusuario', [
 
 //patch
 router.patch('/:codusuario',[
-        validarJWT,
+        // validarJWT,
         check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea ,
-        // check( 'email' ).custom( emailExiste ), implementado en db indice email
+        // check( 'email' ).custom( emailExiste ), 
         check( 'codusuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosPatch );
