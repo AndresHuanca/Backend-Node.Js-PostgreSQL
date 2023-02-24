@@ -40,7 +40,12 @@ class Server {
     // MIddlewares es una funcion que se ejecuta antes de llamar un controlador o un modelo
     middlewares() {
         // list cors permitidos
-        const whitelist =['http://localhost:3000', 'https://login-api-nodejspostgresql-production.up.railway.app', 'https://railway.app'];
+        const whitelist =[ 
+                           'https://login-api-nodejspostgresql-production.up.railway.app', 
+                            'http://localhost:3000',
+                            'https://railway.app',
+                            'https://portafolio-andres-huanca-namuche-production.up.railway.app'
+                        ];
         //cors
         this.app.use( cors({origin: whitelist}) );
 
