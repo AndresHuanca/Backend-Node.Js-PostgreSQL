@@ -41,7 +41,7 @@ class Server {
     middlewares() {
         //cors
         this.app.use( cors({
-            origin: ['http://localhost:3001','https://login-api-nodejspostgresql-production.up.railway.app']
+            origin: ['http://localhost:3001','https://login-api-nodejspostgresql-production.up.railway.app/']
         }) );
 
         //lectura y parseo del body recibir de json
