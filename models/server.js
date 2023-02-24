@@ -42,7 +42,7 @@ class Server {
         // list cors permitidos
         const whitelist =['http://localhost:3000', 'https://login-api-nodejspostgresql-production.up.railway.app'];
         //cors
-        this.app.use( cors({whitelist}) );
+        this.app.use( cors({origin: whitelist}) );
 
         //lectura y parseo del body recibir de json
         this.app.use( express.json() );
