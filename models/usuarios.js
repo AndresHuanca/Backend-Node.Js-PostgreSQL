@@ -52,7 +52,7 @@ Usuarios.prototype.toJSON = function () {
     values.id_usuario = values.codusuario
     delete values.password;
     delete values.codusuario;
-    delete values.id_rol;
+    // delete values.id_rol;
     return values;
 }
 

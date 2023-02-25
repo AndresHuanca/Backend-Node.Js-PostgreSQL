@@ -1,127 +1,157 @@
-// const { response } = require("express");
+const { response } = require("express");
 
-// // Import para la validacion de id de mongoose
-// const { ObjectId } = require('mongoose').Types;
-
-// // Import models
-// const { Usuarios, Categoria, Producto } = require('../models');
-
-// const coleccionesPermitidas = [
-//     'categorias',
-//     'productos',
-//     'usuarios',
-//     'roles'
-
-// ];
-
-// // Validacion by Id de Usuarios
-// const buscarUsuarios = async ( termino = '', res = response ) => {
-//     // validacion de id valido con mongoose
-//     const esMongoId = ObjectId.isValid( termino ); // en caso de que sea id valido TRUE
-
-//     if( esMongoId ) {
-//         const usuario = await Usuarios.findById( termino );
-//         return res.json({
-//             results: ( usuario ) ? [ usuario ] : []
-//         });
-//     }
-
-//     // For hacer mas sensibles las busquedas
-//     const regex = new RegExp( termino, 'i');
-//     // con el count en reemplazo de find da la cantidad
-//     const usuarios =  await Usuarios.find({ 
-//         $or: [{ nombre: regex }, { correo: regex }],
-//         $and: [{ estado: true}]
-//     });
-
-//     res.json({
-//         results: usuarios
-//     });
+// Import para la validacion de id de sequelice
+const { validate: uuidValidate } = require('uuid');
+// para busquedas en sequelice
+const { Op, where } = require('sequelize');
 
 
-// };
+// Import models
+const { Usuarios, Alumnos, Profesores, Facultades, Roles, Tipos_de_Facultades } = require('../models');
 
-// // Validacion by Id de Productos
-// const buscarProductos = async ( termino = '', res = response ) => {
-//     // validacion de id valido con mongoose
-//     const esMongoId = ObjectId.isValid( termino ); // en caso de que sea id valido TRUE
+const coleccionesPermitidas = [
+    'usuarios',
+    'alumnos',
+    'profesores',
+    'facultades',
+    'roles'
+];
 
-//     if( esMongoId ) {
-//         const producto = await Producto.findById( termino )
-//                                 .populate( 'categoria', 'nombre' );
-//         return res.json({
-//             results: ( producto ) ? [ producto ] : []
-//         });
-//     }
+const buscarRoles = async ( termino = '', res = response ) => {
+    // Bucar por uui
+    if( uuidValidate(termino) ) {
+        // Buscar por id
+         const rol = await Roles.findByPk(termino);
+         // Show roles
+         return res.json({ 
+             results: (rol) ? [rol] : []
+         })
+    }
+    // Buscar por nombre
+    const roles =  await Roles.findAndCountAll({ 
+        where:{
+            [Op.or]:[
+                { rol:{ [Op.iLike]: `%${termino}%` }},
+            ]
+        }
+    });
 
-//     // For hacer mas sensibles las busquedas
-//     const regex = new RegExp( termino, 'i');
-//     // con el count en reemplazo de find da la cantidad
-//     const productos =  await Producto.find({ nombre:regex , estado: true })
-//                         .populate( 'categoria', 'nombre' );
-
-//     res.json({
-//         results: productos
-//     });
-
-
-// };
-
-// // Validacion by Id de Categorias
-// const buscarCategorias = async ( termino = '', res = response ) => {
-//      // validacion de id valido con mongoose
-//      const esMongoId = ObjectId.isValid( termino ); // en caso de que sea id valido TRUE
-
-//     if( esMongoId ) {
-//         const categoria = await Categoria.findById( termino );
-//         return res.json({
-//             results: ( categoria ) ? [ categoria ] : []
-//         });
-//     }
-//     // For hacer mas sensibles las busquedas
-//     const regex = new RegExp( termino, 'i');
-//     // con el count en reemplazo de find da la cantidad
-//     const categorias =  await Categoria.find({ nombre:regex , estado: true });
-
-//     res.json({
-//         results: categorias
-//     });
+    res.json({
+        results: roles
+    });
 
 
-// };
+};
+
+const buscarUsuarios = async ( termino = '', res = response ) => {
+
+    // Bucar por uui
+    if( uuidValidate(termino) ) {
+        // Bucar usuario
+        const usuario = await Usuarios.findByPk(termino);
+        // Show users
+        return res.json({ 
+            results: (usuario) ? [usuario] : []
+        })
+    }
+
+    // Buscar por nombre
+    const results =  await Usuarios.findAndCountAll({ 
+        where:{
+            [Op.or]:[
+                { nombre:{ [Op.iLike]: `%${termino}%` }},
+                { apellidos:{ [Op.iLike]: `%${termino}%` }},
+                { email:{ [Op.iLike]: `%${termino}%` }}
+            ]
+        }
+    });
 
 
-// const buscar = async( req, res = response ) => {
+    res.json({
+        results,
+    });
 
-//     const { coleccion, termino } = req.params;
 
-//     // Validar si existe coleccion
-//     if( !coleccionesPermitidas.includes( coleccion ) ) {
-//         return res.status( 400 ).json({ 
-//             msg: `La coleccion ${ coleccion } no existe`, 
-//             msm: `Colecciones permitidas ${ coleccionesPermitidas } `
-//         });
-//     }
-//     // 
-//     switch ( coleccion ) {
-//         case 'usuarios':
-//             buscarUsuarios( termino, res );
-//         break;
-//         case 'categorias':
-//             buscarCategorias( termino, res );
-//         break;
-//         case 'productos':
-//             buscarProductos( termino, res );
+};
+
+
+const buscarFacultades = async ( termino = '', res = response ) => {
+    // Bucar por uui
+    if( uuidValidate(termino) ) {
+        // Bucar facultad
+        const facultad = await Facultades.findByPk(termino,{
+            include: {
+                model: Tipos_de_Facultades,
+                as: 'types',
+                attributes:['facultad']
+            }
+        })
+
+        return res.json({ 
+            results: (facultad) ? [facultad] : []
+        })
+    }
+
+    // Buscar por nombre
+    const results =  await Facultades.findAndCountAll({     
+        include:[{
+            model: Tipos_de_Facultades,
+            as: 'types',
+            attributes:['facultad'],
+            where:{
+                [Op.or]:[
+                { facultad:{ [Op.iLike]: `%${termino}%` }},
+                ]
+            }
+        }]
+        });
+
+    res.json({
+        results
+    });
+
+
+};
+
+
+const buscar = async( req, res = response ) => {
+
+    const { coleccion, termino } = req.params;
+
+    // Validar si existe coleccion
+    if( !coleccionesPermitidas.includes( coleccion ) ) {
+        return res.status( 400 ).json({ 
+            msg: `La coleccion ${ coleccion } no existe`, 
+            msm: `Colecciones permitidas ${ coleccionesPermitidas } `
+        });
+    }
+    // 
+    switch ( coleccion ) {
+        case 'roles':
+            buscarRoles( termino, res );
+        break;
+        case 'usuarios':
+            buscarUsuarios( termino, res );
+        break;
+        case 'profesores':
+            buscarProductos( termino, res );
             
-//         break;    
-//         default:
-//             res.status( 500 ).json({
-//                 msg: `se le olvido Hacer esta busqueda`
-//             });
-//     }
+        break;
+        case 'facultades':
+            buscarFacultades( termino, res );
+            
+        break; 
 
-// };
+        default:
+            res.status( 500 ).json({
+                msg: `se le olvido Hacer esta busqueda`
+            });
+    }
 
-// module.exports = {
-//     buscar
-// };
+};
+
+module.exports = {
+    buscar,
+    buscarRoles,
+    buscarFacultades
+};

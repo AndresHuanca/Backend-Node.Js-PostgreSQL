@@ -35,9 +35,8 @@ const Facultades = db.define ( 'facultades', {
             key: 'id_tipo'
         },
     }
-    
-    
-});
+},{timestamps: false}
+);
 
 // sobreescribir funcion toJSON para no enviar el password- codusuario-id_rol
 Facultades.prototype.toJSON = function () {

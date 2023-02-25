@@ -113,6 +113,10 @@ https://developers.google.com/identity/gsi/web/guides/overview - https://console
     Realizar Busquedas
         1er crear ruta en models.server
         2do en server routes debe tner mismo  nombre el archivo de routes and controller
+        34 npm install uuid (para validar uuid valido de sequelice)
+        4 npm install diacritics (para bsuquedas sea incesibles a tildes y ñ)
+
+
     --------------------------------------------------------------------------------------
     CARGA DE ARCHIVOS
          Ruta-controller- model
