@@ -20,10 +20,10 @@ async function googleVerify( token = '' ) {
 
     return {
         nombre: given_name,
-        apellidos: family_name,
+        apellido: family_name,
+        correo: email,
+        password: jti,
         img: picture,
-        email,
-        password: jti
     };
 }
 

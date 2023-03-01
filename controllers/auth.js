@@ -10,24 +10,17 @@ const { generarJWT, googleVerify } = require('../helpers');
 // Controller Login
 const login = async( req, res = response ) => {
 
-    const { email, password } = req.body;
+    const { correo, password } = req.body;
 
     try {
 
         // Verificar si el email existe 
-        const usuario = await Usuarios.findOne({ where: {email} });
+        const usuario = await Usuarios.findOne({ where: {correo} });
         if( !usuario ) {
             return res.status(400).json({ 
-                msg: 'Email no se encuentra en la base de datos'
+                msg: 'El correo no se encuentra en la base de datos'
             });
-        }
-
-        //verificar si el usuario esta activo
-        // if( !usuario.estado ) {
-        //     return res.status(400).json({ 
-        //         msg: 'Cuenta en estado false: "Hable con el administrador"'
-        //     });
-        // }
+        };
         
         // Verificar si contraseña es correcta
         const validPassword = bcryptjs.compareSync( password, usuario.password );
@@ -38,7 +31,7 @@ const login = async( req, res = response ) => {
         }
         
         // Generar JWT
-        const token = await generarJWT( usuario.codusuario );
+        const token = await generarJWT( usuario.id_usuario );
 
         res.json({
             usuario,
@@ -62,13 +55,11 @@ const googleSignIn = async(req, res = response) => {
 
     const { id_token } = req.body;
 
-    try {
-
         // const googleUser = await googleVerify(id_token);
         // console.log(googleUser);
-        const { nombre, apellidos, img, email, password } = await googleVerify(id_token);
+        const { nombre, apellido, img, correo, password } = await googleVerify(id_token);
 
-        let usuario = await Usuarios.findOne({ where: {email} } )
+        let usuario = await Usuarios.findOne({ where: {correo} } )
 
         if( !usuario ) {
             // Si usuario no existe crear uno nuevo
@@ -80,10 +71,9 @@ const googleSignIn = async(req, res = response) => {
             // Asginando new password
             const data = {
                 nombre,
-                apellidos,
+                apellido,
+                correo,
                 password: passwordJWT,
-                email,
-                google: true,
                 img,
                 id_rol: a,
             };
@@ -97,19 +87,12 @@ const googleSignIn = async(req, res = response) => {
         }
 
         // Generar JWT
-        const token = await generarJWT( usuario.codusuario );
+        const token = await generarJWT( usuario.id_usuario );
         
         res.json({
             usuario,
             token
         });
-    } catch (error) {
-        if(error instanceof Error){
-            return res.status(500).json({ message: error.message });
-        }
-        
-    }
-
 
 };
 
@@ -118,7 +101,7 @@ const renovarToken = async( req, res = response) => {
 
     const { usuario } = req;
      // Generar el JWT
-    const token = await generarJWT( usuario.codusuario);
+    const token = await generarJWT( usuario.id_usuario);
 
     res.json({
         usuario,

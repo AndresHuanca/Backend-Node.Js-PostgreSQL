@@ -11,8 +11,8 @@ const router = Router();
 
 //post - validaciones- Login
 router.post('/login',[
-    check('email', 'El email no es valido').isEmail(),
-    check('email', 'El email es obligatorio').not().isEmpty(),
+    check('correo', 'El correo no es valido').isEmail(),
+    check('correo', 'El correo es obligatorio').not().isEmpty(),
     check( 'password', 'La contraseña es obligatoria' ).notEmpty(),
     validarCampos
 ], login );
