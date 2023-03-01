@@ -20,7 +20,7 @@ const usuariosGet = async(req, res = response ) => {
                 as: 'rols',
                 attributes:['rol']
             }],
-            attributes: ['nombre', 'apellidos', 'password', 'email', 'google', 'img', 'codusuario'],
+            attributes: ['id_usuario','nombre', 'apellido', 'password', 'correo', 'img', 'id_rol'],
         });
         //all users 
         const total =  usuarios.length;
@@ -44,26 +44,13 @@ const usuariosGet = async(req, res = response ) => {
 const usuariosPost = async(req, res = response) => {
         
         // una forma de enviar todo {google, ...resto
-        const { google, ...resto} = req.body;
-        // { Para encontrar id_rol con where
-        // const [existeIdRol] = await Roles.findAll({   
-            //     where:{ rol }
-            //     });
-        // { 
-        // Para encontrar el y id enviando el rol
-        const [existeIdRol]= await Usuarios.findAll({
-            include:[{
-                model: Roles,
-                as: 'rols',
-                attributes:['id_rol'],
-                where:{rol: resto.rol}
-            }]
-        });
+        const { id_usuario, ...resto} = req.body;
 
-        // para utilizar el id_rol
-        const id_rol = existeIdRol.dataValues.id_rol;
-        // const a = existeIdRol.dataValues : me sirve para ver los valores
-        // console.log(a);   
+        const rol = resto.rol;
+        
+        // Establesco rol en "b" sacando de DB
+        const existeRol = await Roles.findOne({where: {rol}})
+        const id_rol = existeRol.dataValues.id_rol;
         
         //encriptar la contraseña
         const salt = bcryptjs.genSaltSync();
@@ -72,10 +59,9 @@ const usuariosPost = async(req, res = response) => {
         // Variables envio por defecto estado: true
         const userNew = {
             nombre: resto.nombre,
-            apellidos: resto.apellidos,
+            apellido: resto.apellido,
+            correo: resto.correo,
             password: resto.password,
-            email: resto.email,
-            google: true,
             img: resto.img,
             id_rol
         };
@@ -94,24 +80,15 @@ const usuariosPost = async(req, res = response) => {
 }
 
 //put - Actualizar
-const usuariosPut = async(req = request, res = response) => {
-    
-    // try {    
-        //para dinamico
-        const { codusuario } = req.params;
-        //desustructurar (estado no se puede cambiar)
-        const { google, ...updates } = req.body;
+const usuariosPut = async(req = request, res = response) => {  
 
-         //--Test para ver usuarios.estado
-        // const user = await Usuarios.findOne( { where: { email: updates.email } })
-        // if( !user.estado){
-        //     return res.status(404).json({ 
-        //         message:`Usuario / estado ${user.estado}`
-        //     })
-        // }
-        // //----
-        // Validación de update para no modificar codusuario
-        if(updates.codusuario){
+        //desustructurar (estado no se puede cambiar)
+        const { id_usuario } = req.params;
+
+        const {...updates } = req.body;
+
+        // Validación de update para no modificar id_usuario
+        if(updates.id_usuario){
             throw new Error( `No se puede modificar el id` );
         }
 
@@ -123,11 +100,11 @@ const usuariosPut = async(req = request, res = response) => {
         
         const rol = updates.rol;
         // Para encontrar el rol y id
-        const [existeIdRol] = await Roles.findAll({   
-            where:{ rol }
-            });
-        // para utilizar el id_rol
-        const id_rol = existeIdRol.dataValues.id_rol;
+         // Establesco rol en "id_rol" sacando de DB
+        const existeRol = await Roles.findOne({where: {rol}})
+        const id_rol = existeRol.dataValues.id_rol;
+
+        // asignando id_rol
         updates.id_rol = id_rol;
 
         //encriptar la contraseña
@@ -135,79 +112,48 @@ const usuariosPut = async(req = request, res = response) => {
         updates.password = bcryptjs.hashSync( updates.password, salt );
         
         // Localizo usuario por Id
-        await Usuarios.update( updates, { where: { codusuario } });
+        await Usuarios.update( updates, { where: { id_usuario } });
 
         res.status(500).json({
             updates,   
         });
 
-    // } catch (error) {
-
-    //     if(error instanceof Error){
-    //         return res.status(500).json({ message: error.message });
-    //     }
-    // }
-
 };
 
 //delete
 const usuariosDelete = async(req, res) => {
-    
-    try {
-        const { codusuario } = req.params;
+  
+        const { id_usuario } = req.params;
     
         // borrar fisicamente
-        await Usuarios.destroy({where: { codusuario }}, { truncate: true });
+        await Usuarios.destroy({where: { id_usuario }}, { truncate: true });
     
-        // borrar mediante estado ="false"
-        // Localizo usuario por Id y update estado = false
-        // await Usuarios.update( {estado: false }, { where: { codusuario } });
-        const usuarioAutenticado = req.usuario;
+        // const usuarioAutenticado = req.usuario;
         
         res.json({
-            msg: `El usuario de id ${codusuario} eliminado`,
-            usuarioAutenticado
+            msg: `El usuario de id ${id_usuario} eliminado`,
+            // usuarioAutenticado
         });
-
-    } catch (error) {
-
-        if(error instanceof Error){
-            return res.status(500).json({ message: error.message });
-        }
-        
-    }
 
 };
 
 //patch - Actualizar -parcialmente
 const usuariosPatch = async(req = request, res = response) => {
     
-
     //para dinamico
-    const { codusuario } = req.params;
+    const { id_usuario } = req.params;
     //desustructurar (estado no se puede cambiar)
-    const { nombre, apellidos, email } = req.body;
+    const { nombre, apellidos, correo } = req.body;
     
-    //Validacion de email repetido
-    existeEmail = await Usuarios.findOne( { where: {codusuario} });
+    existeEmail = await Usuarios.findOne( { where: {id_usuario} });
 
-    if(existeEmail==email){
-        
-    }
-    
-    console.log(existeEmail.email);
-
-    // if( existeEmail ) {
-    //     throw new Error( `El email ${ email } ya esta registrado` );
-    // }  
-    
     // Localizo usuario por Id
-    await Usuarios.update( {nombre, apellidos, email}, { where: { codusuario } });
+    await Usuarios.update( {nombre, apellidos, correo}, { where: { id_usuario } });
 
     res.status(500).json({
         nombre,
         apellidos,
-        email   
+        correo   
     });
 
 };

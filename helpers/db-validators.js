@@ -17,24 +17,24 @@ const idExiste = async ( id = '' ) => {
 };
 
 // Valida la existencia de email registrado
-const emailExiste = async ( email = '' ) => {  
+const emailExiste = async ( correo = '' ) => {  
 
     //verificar si el correo 
-    existeEmail = await Usuarios.findOne( { where: {email} });
+    existeEmail = await Usuarios.findOne( { where: {correo} });
     
 
     if( existeEmail ) {
-        throw new Error( `El email ${ email } ya esta registrado` );
+        throw new Error( `El correo ${ correo } ya esta registrado` );
     }       
     
 };
 
 // Valida la existencia del usuario por id
-const existeUsuarioPorId= async ( codusuario = '' ) => {  
+const existeUsuarioPorId= async ( id_usuario = '' ) => {  
     //verificar si el correo existe
-    existeUsuario = await Usuarios.findByPk( codusuario );
+    existeUsuario = await Usuarios.findByPk( id_usuario );
     if( !existeUsuario ) {
-        throw new Error( `El usuario de id ${ codusuario } no existe` );
+        throw new Error( `El usuario de id ${ id_usuario } no existe` );
     }
 
 };

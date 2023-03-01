@@ -5,7 +5,7 @@ const { db } = require('../database/config');
 
 // Modelo de Uusuario
 const Usuarios = db.define ( 'usuarios', { 
-    codusuario: { 
+    id_usuario: { 
     
         type: DataTypes.UUID,
         primaryKey: true,
@@ -15,7 +15,7 @@ const Usuarios = db.define ( 'usuarios', {
         
         type: DataTypes.STRING,
     },
-    apellidos: { 
+    apellido: { 
         
         type: DataTypes.STRING,
     },
@@ -24,13 +24,9 @@ const Usuarios = db.define ( 'usuarios', {
         
         // required: [ true, 'La contraseña es obligatorio'],
     },
-    email: { 
+    correo: { 
         type: DataTypes.STRING, 
         unique: true, //correo unico
-    },
-    google: { 
-        type: DataTypes.BOOLEAN,  
-        default: true
     },
     img: { 
         type: DataTypes.STRING, 
@@ -49,9 +45,7 @@ const Usuarios = db.define ( 'usuarios', {
 Usuarios.prototype.toJSON = function () {
     let values = Object.assign({}, this.get());
 
-    values.id_usuario = values.codusuario
     delete values.password;
-    delete values.codusuario;
     // delete values.id_rol;
     return values;
 }

@@ -9,26 +9,6 @@ const facultadesPost = async( req, res = response ) => {
         // en el body debe venir: telefono y web
         const { id_facultad, codusuario, id_tipo, ...resto } = req.body;
     
-        //-----------------------Otra forma de hacer----------------(pero necesita antes tener creado 2 facultades con los tipos de facultades)
-        // Para encontrar el y id
-        // const [existeIdFacuUsuaTipo]= await Facultades.findAll({
-        //     include:[{
-        //         model: Usuarios,
-        //         as: 'faculties_x_users',
-        //         attributes:['codusuario']
-        //     },{
-        //         model: Tipos_de_Facultades,
-        //         as: 'types',
-        //         attributes:['id_tipo']
-
-        //     }],
-        // });
-        // para utilizar los id de Usuario-TipodeFacultad
-       // codusuario = existeIdFacuUsuaTipo.dataValues.codusuario;
-       // id_tipo = existeIdFacuUsuaTipo.dataValues.id_tipo;
-       // console.log(existeIdFacuUsuaTipo);
-        //--------------------------fin----------------------------- 
-
         const facultad = resto.facultad;
         // Establesco id_tipo en "b" sacando de DB
         const existeFacultad = await Tipos_de_Facultades.findOne({where: {facultad}})

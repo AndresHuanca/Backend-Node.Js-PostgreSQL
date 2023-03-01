@@ -33,39 +33,39 @@ router.get('/', usuariosGet );
 router.post('/', [
         //validaciones de los argumentos enviados en post
         check( 'nombre', 'El nombre  es obligatorio' ).notEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
-        check( 'apellidos', 'Los apellidos son obligatorios' ).notEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
+        check( 'apellido', 'Los apellidos son obligatorios' ).notEmpty(), //isEmpty(¿es vacio?)(no().isEmpty 'no es correo')
         check( 'password', 'La contraseña es obligatoria' ).notEmpty(),
         check( 'password', 'El password debe ser mas de 6 letras' ).isLength( { min: 6 } ), //tamaño mino de 6
-        check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea email
-        check( 'email' ).custom( emailExiste ),
+        check( 'correo', 'El correo no es valido' ).isEmail(), //validacion que sea email
+        check( 'correo' ).custom( emailExiste ),
         check( 'rol' ).custom( esRoleValido ),
         validarCampos
 ],usuariosPost );
 
 //put
-router.put('/:codusuario',[
+router.put('/:id_usuario',[
         check( 'rol' ).custom( esRoleValido ),
-        check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea ,
-        check( 'codusuario' ).custom( existeUsuarioPorId ),
+        check( 'correo', 'El correo no es valido' ).isEmail(), //validacion que sea ,
+        check( 'id_usuario' ).custom( existeUsuarioPorId ),
         // validarJWT,
         validarCampos
 ], usuariosPut );
 
 //delete
-router.delete('/:codusuario', [
-        validarJWT,
+router.delete('/:id_usuario', [
+        // validarJWT,
         // esAdminRole, //Para que solo el administrador elimine
         // tieneRole('ADMIN-ROL', 'USER-ROL'),
-        check( 'codusuario' ).custom( existeUsuarioPorId ),
+        check( 'id_usuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosDelete );
 
 //patch
-router.patch('/:codusuario',[
+router.patch('/:id_usuario',[
         // validarJWT,
-        check( 'email', 'El email no es valido' ).isEmail(), //validacion que sea ,
+        check( 'correo', 'El correo no es valido' ).isEmail(), //validacion que sea ,
         // check( 'email' ).custom( emailExiste ), 
-        check( 'codusuario' ).custom( existeUsuarioPorId ),
+        check( 'id_usuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosPatch );
 
