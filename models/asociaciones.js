@@ -1,9 +1,9 @@
-const Alumnos = require("./alumnos");
-const Facultades = require("./facultades");
-const Profesores = require("./profesores");
-const Profesores_x_Facultades = require("./profesores_x_facultades");
+const Carritos = require("./carritos");
+const  Compras  = require("./compras");
+// const Alumnos = require("./alumnos");
+// const Facultades = require("./facultades");
+// const Profesores = require("./profesores");
 const Roles = require("./roles");
-const Tipos_de_Facultades = require("./tipos_de_facultades");
 const Usuarios = require("./usuarios");
 
 // ROLES 1 -------N USUARIOS
@@ -15,32 +15,32 @@ Roles.hasMany( Usuarios, {as:'users', foreignKey:'id_rol'});
 // Se añade una clave id_rol a la tabla Usuarios
 Usuarios.belongsTo( Roles, {as: 'rols', foreignKey:'id_rol'} );
 
-// TIPOS_DE_FACULTADES 1 -------N FACULTADES
+// USUARIOS 1 -------N FACULTADES
 // Uno a muchos, 1 a N
-// Tipos_de_facultades va a tener muchas facultades
-// Se añade una clave id_tipo a la tabla Facultades
-Tipos_de_Facultades.hasMany(Facultades, {as:'faculties', foreignKey:'id_tipo'});
+// Usuarios va a tener muchas facultades
+// Se añade una clave codusuario a la tabla Facultades
+Usuarios.hasMany( Compras, {as:'shopping_x_users', foreignKey:'id_usuario'});
 
 // Se añade una clave id_rol a la tabla Usuarios
-Facultades.belongsTo( Tipos_de_Facultades, {as: 'types', foreignKey:'id_tipo'} );
+Compras.belongsTo( Usuarios, {as: 'users_x_shopping', foreignKey:'id_usuario'} );
 
 // USUARIOS 1 -------N FACULTADES
 // Uno a muchos, 1 a N
 // Usuarios va a tener muchas facultades
 // Se añade una clave codusuario a la tabla Facultades
-Usuarios.hasMany(Facultades, {as:'users_x_faculties', foreignKey:'codusuario'});
+Carritos.hasMany( Compras, {as:'shopping_x_cart', foreignKey:'id_carrito'});
 
 // Se añade una clave id_rol a la tabla Usuarios
-Facultades.belongsTo( Usuarios, {as: 'faculties_x_users', foreignKey:'codusuario'} );
+Compras.belongsTo( Carritos, {as: 'cart_x_shopping', foreignKey:'id_carrito'} );
 
 // FACULTADES 1 -------N ALUMNOS
 // Uno a muchos, 1 a N
 // Facultades va a tener muchas alumnos
 // Se añade una clave id_facultad a la tabla Alumnos
-Facultades.hasMany(Alumnos, {as:'faculties_x_students', foreignKey:'id_facultad'});
+// Compras.hasMany( Carrito, {as:'shopping_x_cart', foreignKey:'id_compra'});
 
 // Se añade una clave id_rol a la tabla Usuarios
-Alumnos.belongsTo( Facultades, {as: 'students_x_faculties', foreignKey:'id_facultad'} );
+// Carrito.belongsTo( Compras, {as: 'cart_x_shopping', foreignKey:'id_compra  '} );
 
 // NaN
 // El usuario pertenezca a varias bandas
@@ -48,15 +48,6 @@ Alumnos.belongsTo( Facultades, {as: 'students_x_faculties', foreignKey:'id_facul
 // user.addBand user.getBands...etc.
 
 // otherKey asigna el fk especifico que se implementa en la DB
-Profesores.belongsToMany(Facultades, { through: "profesores_x_facultades" , foreignKey:'id_profesor', otherKey: 'id_profesor' });
-Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades" , foreignKey:'id_facultad', otherKey: 'id_facultad'});
+Usuarios.belongsToMany(Carritos, { through: "cart_x_users" , foreignKey:'id_usuario', otherKey: 'id_usuario'});
+Carritos.belongsToMany(Usuarios, { through: "cart_x_users" , foreignKey:'id_carrito', otherKey: 'id_carrito' });
 
-// Profesores.belongsToMany(Facultades, { through: "profesores_x_facultades" , sourceKey: 'id_profesor', targetKey: 'id_facultad'});
-// Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades" , sourceKey: 'id_facultad', targetKey: 'id_profesor' });
-
-
-// Profesores.belongsToMany(Facultades, { through: Profesores_x_Facultades });
-// Facultades.belongsToMany(Profesores, { through: Profesores_x_Facultades });
-
-// Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades"});
-// Facultades.belongsToMany(Profesores, { through: "profesores_x_facultades"})

@@ -4,47 +4,44 @@ const { Sequelize, DataTypes } = require('sequelize');
 const { db } = require('../database/config');
 
 // Modelo de Uusuario
-const Facultades = db.define ( 'facultades', { 
-    id_facultad: { 
+const Compras = db.define ( 'compras', { 
+    id_compra: { 
     
         type: DataTypes.UUID,
         primaryKey: true,
         autoIncrement: true,
         unique: true,
     },
-    telefono: {  
-        type: DataTypes.STRING, 
+    fecha: {  
+        type: DataTypes.DATE, 
         unique: true,
     },
-    web: { 
-        type: DataTypes.STRING, 
-        // required: [ true, 'El correo es obligatorio'],
+    hora: { 
+        type: DataTypes.TIME, 
         unique: true, //correo unico
     },
-    codusuario:{
+    id_usuario:{
         type: DataTypes.UUID,
         references: {
             model: 'usuarios',
-            key: 'codusuario'
+            key: 'id_usuario'
         },
     },
-    id_tipo:{
+    id_carrito:{
         type: DataTypes.UUID,
         references: {
-            model: 'tipos_de_facultades',
-            key: 'id_tipo'
+            model: 'carrito',
+            key: 'id_carrito'
         },
-    }
+    },
 },{timestamps: false}
 );
 
 // sobreescribir funcion toJSON para no enviar el password- codusuario-id_rol
-Facultades.prototype.toJSON = function () {
+Compras.prototype.toJSON = function () {
     let values = Object.assign({}, this.get());
 
-    // delete values.id_facultad;
     // delete values.codusuario;
-    delete values.id_tipo;
     return values;
 }
-module.exports = Facultades;
+module.exports = Compras;

@@ -1,6 +1,6 @@
 
 //importando modelo usuario //importando modelo categoria
-const { Usuarios, Roles, Tipos_de_Facultades, Facultades, Alumnos, Notas } = require('../models');
+const { Usuarios, Roles, Tipos_de_Facultades, Facultades, Alumnos, Notas, Compras } = require('../models');
 const Cursos = require('../models/cursos');
 const Profesores = require('../models/profesores');
 const Profesores_x_Facultades = require('../models/profesores_x_facultades');
@@ -66,22 +66,22 @@ const nombreCategoriaExiste = async ( nombre = '' ) => {
 
 //-----------------------FACULTADES----------------------------------- 
 // Validación de Nombre unico de Facultades
-const esFacultadValido = async ( facultad = '' ) => {  
-    // Convirtiendo a toUpperCase porque asi esta en la DB
-    facultad = facultad.toUpperCase();
-    //verificar si el correo existe
-    const existeFacultad = await Tipos_de_Facultades.findOne( { where: {facultad} } );
-    if( !existeFacultad ) {
-        throw new Error( `La Facultad ${ facultad } no existe en la DB` );
-    }
-};
+// const esCompraValido = async ( facultad = '' ) => {  
+//     // Convirtiendo a toUpperCase porque asi esta en la DB
+//     facultad = facultad.toUpperCase();
+//     //verificar si el correo existe
+//     const existeFacultad = await Tipos_de_Facultades.findOne( { where: {facultad} } );
+//     if( !existeFacultad ) {
+//         throw new Error( `La Facultad ${ facultad } no existe en la DB` );
+//     }
+// };
 
 // Validación de existencia de Facultad por Id
-const existeFacultadPorId = async ( id_facultad = '' ) => { 
+const existeCompraPorId = async ( id_compra = '' ) => { 
     // verifficar si el id existe
-    existeFacultad = await Facultades.findOne({ where: {id_facultad} });
-    if( !existeFacultad ) {
-        throw new Error( `El id ${ id_facultad } no existe en DB`)
+    existeCompra = await Compras.findOne({ where: {id_compra} });
+    if( !existeCompra ) {
+        throw new Error( `El id ${ id_compra } no existe en DB`)
         
     }
 };
@@ -191,8 +191,8 @@ module.exports = {
     emailExiste,
     existeUsuarioPorId,
     nombreCategoriaExiste,
-    esFacultadValido,
-    existeFacultadPorId,
+    // esCompraValido,
+    existeCompraPorId,
     existeAlumnoPorId,
     existeProfesorPorId,
     proFacExiste,
