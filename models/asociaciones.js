@@ -1,5 +1,7 @@
 const Carritos = require("./carritos");
+const Categorias = require("./categorias");
 const  Compras  = require("./compras");
+const Productos = require("./productos");
 // const Alumnos = require("./alumnos");
 // const Facultades = require("./facultades");
 // const Profesores = require("./profesores");
@@ -33,15 +35,6 @@ Carritos.hasMany( Compras, {as:'shopping_x_cart', foreignKey:'id_carrito'});
 // Se añade una clave id_rol a la tabla Usuarios
 Compras.belongsTo( Carritos, {as: 'cart_x_shopping', foreignKey:'id_carrito'} );
 
-// FACULTADES 1 -------N ALUMNOS
-// Uno a muchos, 1 a N
-// Facultades va a tener muchas alumnos
-// Se añade una clave id_facultad a la tabla Alumnos
-// Compras.hasMany( Carrito, {as:'shopping_x_cart', foreignKey:'id_compra'});
-
-// Se añade una clave id_rol a la tabla Usuarios
-// Carrito.belongsTo( Compras, {as: 'cart_x_shopping', foreignKey:'id_compra  '} );
-
 // NaN
 // El usuario pertenezca a varias bandas
 // Esto crear una nueva tabla en la base de datos llamada profesores_x_facultades
@@ -51,3 +44,7 @@ Compras.belongsTo( Carritos, {as: 'cart_x_shopping', foreignKey:'id_carrito'} );
 Usuarios.belongsToMany(Carritos, { through: "cart_x_users" , foreignKey:'id_usuario', otherKey: 'id_usuario'});
 Carritos.belongsToMany(Usuarios, { through: "cart_x_users" , foreignKey:'id_carrito', otherKey: 'id_carrito' });
 
+// CATEGORIAS 1 -------N PRODUCTOS
+Categorias.hasMany( Productos, {as:'category_x_product', foreignKey:'id_categoria'});
+
+Productos.belongsTo( Categorias, {as: 'product_x_category', foreignKey:'id_categoria'} );

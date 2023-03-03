@@ -85,7 +85,7 @@ const usuariosPut = async(req = request, res = response) => {
         //desustructurar (estado no se puede cambiar)
         const { id_usuario } = req.params;
 
-        const {...updates } = req.body;
+        const { ...updates } = req.body;
 
         // Validación de update para no modificar id_usuario
         if(updates.id_usuario){
@@ -143,16 +143,16 @@ const usuariosPatch = async(req = request, res = response) => {
     //para dinamico
     const { id_usuario } = req.params;
     //desustructurar (estado no se puede cambiar)
-    const { nombre, apellidos, correo } = req.body;
+    const { nombre, apellido, correo } = req.body;
     
     existeEmail = await Usuarios.findOne( { where: {id_usuario} });
 
     // Localizo usuario por Id
-    await Usuarios.update( {nombre, apellidos, correo}, { where: { id_usuario } });
+    await Usuarios.update( {nombre, apellido, correo}, { where: { id_usuario } });
 
     res.status(500).json({
         nombre,
-        apellidos,
+        apellido,
         correo   
     });
 

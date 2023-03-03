@@ -1,7 +1,6 @@
 
 //importando modelo usuario //importando modelo categoria
-const { Usuarios, Roles, Tipos_de_Facultades, Facultades, Alumnos, Notas, Compras } = require('../models');
-const Cursos = require('../models/cursos');
+const { Usuarios, Roles, Notas, Compras, Productos, Categorias } = require('../models');
 const Profesores = require('../models/profesores');
 const Profesores_x_Facultades = require('../models/profesores_x_facultades');
 
@@ -53,16 +52,16 @@ const esRoleValido = async(rol='') => {
 // Validaciones de BD de CATEGORIAS
 
 // Validación de Nombre unico de Categorias
-const nombreCategoriaExiste = async ( nombre = '' ) => {
-    // Convirtiendo a toUpperCase porque asi esta en la DB
-    nombre = nombre.toUpperCase();  
-    //verificar si el correo existe
-    existeNombre = await Categoria.findOne( { nombre } );
-    if( existeNombre ) {
-        throw new Error( `El nombre ${ nombre } ya existe` );
-    }
+// const nombreCategoriaExiste = async ( nombre = '' ) => {
+//     // Convirtiendo a toUpperCase porque asi esta en la DB
+//     nombre = nombre.toUpperCase();  
+//     //verificar si el correo existe
+//     existeNombre = await Categorias.findOne( { nombre } );
+//     if( existeNombre ) {
+//         throw new Error( `El nombre ${ nombre } ya existe` );
+//     }
     
-};
+// };
 
 //-----------------------FACULTADES----------------------------------- 
 // Validación de Nombre unico de Facultades
@@ -103,15 +102,24 @@ const emailNoExiste = async ( email = '' ) => {
 // -----------------------------ALUMNOS----------------------------
 
 // Validación de existencia de Alumno por Id
-const existeAlumnoPorId = async ( id_alumno = '' ) => { 
-    // verifficar si el id existe
-    existeAlumno = await Alumnos.findByPk(id_alumno);
-    if( !existeAlumno ) {
-        throw new Error( `El id ${ id_alumno } no existe en DB`)
-        
+const esCategoriaValido = async(nombre='') => {
+    nombre = nombre.toUpperCase();
+    
+    existeCategoria = await Categorias.findOne( { where: {nombre} } );
+    if ( !existeCategoria ) {
+        throw new Error( `La categoria ${ nombre } enviado no se encuantra en la DB` );
     }
 };
 
+// const productoExiste = async(nombre='') => {
+        
+//     productoDB = await Productos.findOne({ where:{nombre} });
+
+//     if ( productoDB ) {
+//         throw new Error( `El id ${ nombre } no existe en DB`)        
+//     }
+
+// }
 
 // -----------------------------PROFESORES----------------------------
 // Validación de existencia de Profesor por Id
@@ -124,20 +132,16 @@ const existeProfesorPorId = async ( id_profesor = '' ) => {
     }
 };
 
-// -----------------------------PROFESORES_x_FACULTADES----------------------------
-// Verifica si existe profesor duplicado
-const proFacExiste = async ( pro_x_fac='') => {
-    // extraigo el id_profesor y id_facultad que se esta creando en pro_x_facPost   
-    const id_profesor = pro_x_fac.id_profesor;
-    const id_facultad = pro_x_fac.id_facultad;
-    // Busco la columna por id_profersor y el id_facultad
-    existeProFacFull = await Profesores_x_Facultades.findOne( { where: {id_profesor, id_facultad} })
-    // Si existen los dos datos envía error 
-    if(existeProFacFull){
-        throw new Error( `El Profesor x facultad  ${ id_profesor } - ${ id_facultad } ya esta registrado "o" La actualización requiere datos diferentes`)
+// -----------------------------PRODUCTOS----------------------------
+// Verifica si existe 
+const existeProductoPorId = async ( id_producto = '' ) => { 
+    // verifficar si el id existe
+    existeProducto = await Productos.findByPk(id_producto);
+    if( !existeProducto ) {
+        throw new Error( `El id ${ id_producto } producto no existe en DB`)
+        
     }
-
-}
+};
 
 // Validación de existencia de Profesor_x_Facultad por Id
 const existeProfesor_x_facultadPorId = async ( id_profesor_x_facultad = '' ) => { 
@@ -151,12 +155,12 @@ const existeProfesor_x_facultadPorId = async ( id_profesor_x_facultad = '' ) => 
 
 // -----------------------------CURSOS----------------------------
 
-// Validación de existencia de Alumno por Id
-const existeCursoPorId = async ( id_curso = '' ) => { 
+// Validación de existencia de categorias
+const existeCategoriaPorId = async ( id_categoria = '' ) => { 
     // verifficar si el id existe
-    existeCurso = await Cursos.findByPk(id_curso);
-    if( !existeCurso ) {
-        throw new Error( `El id ${ id_curso } no existe en DB`)
+    existeCategoria = await Categorias.findByPk(id_categoria);
+    if( !existeCategoria ) {
+        throw new Error( `La categoria de  ${ id_categoria } no existe en DB`)
         
     }
 };
@@ -190,15 +194,17 @@ module.exports = {
     esRoleValido,
     emailExiste,
     existeUsuarioPorId,
-    nombreCategoriaExiste,
+    // nombreCategoriaExiste,
     // esCompraValido,
     existeCompraPorId,
-    existeAlumnoPorId,
+    esCategoriaValido,
+    existeProductoPorId,
+    // productoExiste,
     existeProfesorPorId,
-    proFacExiste,
+    existeCategoriaPorId,
     existeProfesor_x_facultadPorId,
-    existeCursoPorId,
-    existeNotaPorId,
+    // existeCursoPorId,
+    // existeNotaPorId,
     coleccionesPermitidas,
     idExiste,
     emailNoExiste

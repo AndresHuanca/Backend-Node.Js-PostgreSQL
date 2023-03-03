@@ -63,8 +63,12 @@ router.delete('/:id_usuario', [
 //patch
 router.patch('/:id_usuario',[
         // validarJWT,
+        check( 'nombre', 'El nombre  es obligatorio' ).notEmpty(), 
+        check( 'apellido', 'El apellido  es obligatorio' ).notEmpty(), 
+        check( 'correo', 'El correo  es obligatorio' ).notEmpty(), 
         check( 'correo', 'El correo no es valido' ).isEmail(), //validacion que sea ,
         // check( 'email' ).custom( emailExiste ), 
+        check( 'id_usuario', 'No es un Id Valido' ).isUUID(), 
         check( 'id_usuario' ).custom( existeUsuarioPorId ),
         validarCampos
 ], usuariosPatch );

@@ -3,20 +3,20 @@
 const usuariosCont = require('./usuarios');
 const authCont = require('./auth');
 const comprasCont = require('./compras');
-// const alumnosCont = require('./alumnos');
+const carritos = require('./carritos');
+const productosCont = require('./productos');
 // const profesoresCont = require('./profesores');
 // const profesores_x_facultadesCont = require('./profesores_x_facultades');
-const carritos = require('./carritos');
-const cursos = require('./cursos');
+const categorias = require('./categorias');
 
 
 module.exports = {
     ...usuariosCont,
     ...authCont,
     ...comprasCont,
-    // ...alumnosCont,
+    ...productosCont,
     // ...profesoresCont,
     // ...profesores_x_facultadesCont,
     ...carritos,
-    ...cursos,
+    ...categorias,
 };

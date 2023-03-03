@@ -12,16 +12,16 @@ class Server {
         this.port = process.env.PORT;
 
         this.paths = {
-            auth:                   '/api/auth',
-            // alumnos:                '/api/alumnos',
-            buscar:                 '/api/buscar',
-            cursos:                 '/api/cursos',
-            compras:                '/api/compras',
-            carritos:                '/api/carritos',
+            usuarios:                   '/api/usuarios',
+            auth:                       '/api/auth',
+            compras:                    '/api/compras',
+            carritos:                   '/api/carritos',
+            productos:                  '/api/productos',
+            buscar:                     '/api/buscar',
+            categorias:                  '/api/categorias',
             // profesores:             '/api/profesores',
             // profesores_x_facultades:'/api/profesores_x_facultades',
-            usuarios:               '/api/usuarios',
-            uploads:                '/api/uploads'
+            uploads:                    '/api/uploads',
         };
 
         // Conectar a base de datos
@@ -64,11 +64,11 @@ class Server {
     routes() {
         
         this.app.use(  this.paths.auth,                    require('../routes/auth') );
-        // this.app.use(  this.paths.alumnos,                 require('../routes/alumnos') );
+        this.app.use(  this.paths.productos,               require('../routes/productos') );
         this.app.use(  this.paths.buscar,                  require('../routes/buscar') );
-        this.app.use(  this.paths.cursos,                  require('../routes/cursos') );
+        this.app.use(  this.paths.categorias,              require('../routes/categorias') );
         this.app.use(  this.paths.compras,                 require('../routes/compras') );
-        this.app.use(  this.paths.carritos,                   require('../routes/carritos') );
+        this.app.use(  this.paths.carritos,                require('../routes/carritos') );
         // this.app.use(  this.paths.profesores,              require('../routes/profesores') );
         // this.app.use(  this.paths.profesores_x_facultades, require('../routes/profesores_x_facultades') );
         this.app.use(  this.paths.usuarios,                require('../routes/usuarios') );

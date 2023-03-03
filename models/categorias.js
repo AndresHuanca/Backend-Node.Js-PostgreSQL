@@ -4,9 +4,8 @@ const { Sequelize, DataTypes } = require('sequelize');
 const { db } = require('../database/config');
 
 // Modelo de Uusuario
-const Cursos = db.define ( 'cursos', { 
-    id_curso: { 
-    
+const Categorias = db.define ( 'categorias', { 
+    id_categoria: { 
         type: DataTypes.UUID,
         primaryKey: true,
         autoIncrement: true,
@@ -15,12 +14,11 @@ const Cursos = db.define ( 'cursos', {
     nombre: {  
         type: DataTypes.STRING,
         unique: true,
- 
     },
-    descripcion: { 
-        type: DataTypes.STRING, 
-    }
-    
-});
+    estado: { 
+        type: DataTypes.BOOLEAN, 
+    },
+},{timestamps: false}
+);
 
-module.exports = Cursos;
+module.exports = Categorias;
