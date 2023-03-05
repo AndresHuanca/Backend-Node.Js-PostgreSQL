@@ -12,6 +12,7 @@ const { Usuarios, Roles, Productos, Categorias } = require('../models');
 const coleccionesPermitidas = [
     'usuarios',
     'productos',
+    'productosget',
     'computacion',
     'moda',
     'cpu',
@@ -156,6 +157,25 @@ const buscarProductos = async ( termino = '', res = response ) => {
 
 };
 
+// Buscar por nombre de productos
+const mostrarProductos = async ( termino = '', res = response ) => {
+
+    // Buscar por nombre
+    const results =  await Productos.findAndCountAll({ 
+        where:{
+            [Op.or]:[
+                { img:{ [Op.iLike]: `%${termino}%` }},
+            ]
+        }
+    });
+
+    res.json({
+        results
+    });
+
+
+}
+
 // Buscar para elegir la colección
 const buscar = async( req, res = response ) => {
 
@@ -178,6 +198,10 @@ const buscar = async( req, res = response ) => {
         break;
         case 'productos':
             buscarProductos( termino, res );
+            
+        break;
+        case 'productosget':
+            mostrarProductos( termino, res );
             
         break;
         // Para que moda tengas más opciones de busqueda
@@ -207,5 +231,6 @@ module.exports = {
     buscar,
     buscarRoles,
     buscar_x_Categoria,
-    buscarProductos
+    buscarProductos,
+    mostrarProductos
 };
