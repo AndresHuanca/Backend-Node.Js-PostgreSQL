@@ -25,7 +25,7 @@ router.put( '/:coleccion/:id', [
     // validarJWT,
     validarArchivoSubir,
     check( 'id', 'No es un Id Valido' ).isUUID(),
-    check( 'coleccion').custom( c => coleccionesPermitidas( c, [ 'usuarios', 'alumnos' ]) ),
+    check( 'coleccion').custom( c => coleccionesPermitidas( c, [ 'usuarios', 'moda','computacion', 'hombre', 'mujer', 'calzado', 'ropa', 'cpu', 'monitor' ]) ),
     validarCampos
 ], actualizarImagenCloudinary);
 // ], actualizarImagen );

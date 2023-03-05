@@ -35,7 +35,7 @@ router.get( '/', productosGet );
 
 // POST
 router.post( '/', [ 
-    validarJWT,
+    // validarJWT,
     check( 'nombre', 'El nombre es obligatorio').not().isEmpty(),
     check( 'descripcion', 'La descripcion es obligatoria').not().isEmpty(),
     check( 'precio', 'El precio es obligatorio').not().isEmpty(),

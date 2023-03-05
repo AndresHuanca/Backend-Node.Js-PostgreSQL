@@ -3,18 +3,23 @@ const { response } = require("express");
 // Import para la validacion de id de sequelice
 const { validate: uuidValidate } = require('uuid');
 // para busquedas en sequelice
-const { Op, where } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 
 
 // Import models
-const { Usuarios, Alumnos, Profesores, Facultades, Roles, Tipos_de_Facultades } = require('../models');
+const { Usuarios, Roles, Productos, Categorias } = require('../models');
 
 const coleccionesPermitidas = [
     'usuarios',
-    'alumnos',
-    'profesores',
-    'facultades',
-    'roles'
+    'productos',
+    'computacion',
+    'moda',
+    'cpu',
+    'monitor',
+    'ropa',
+    'calzado',
+    'hombre',
+    'mujer'
 ];
 
 const buscarRoles = async ( termino = '', res = response ) => {
@@ -60,8 +65,8 @@ const buscarUsuarios = async ( termino = '', res = response ) => {
         where:{
             [Op.or]:[
                 { nombre:{ [Op.iLike]: `%${termino}%` }},
-                { apellidos:{ [Op.iLike]: `%${termino}%` }},
-                { email:{ [Op.iLike]: `%${termino}%` }}
+                { apellido:{ [Op.iLike]: `%${termino}%` }},
+                { correo:{ [Op.iLike]: `%${termino}%` }}
             ]
         }
     });
@@ -75,36 +80,74 @@ const buscarUsuarios = async ( termino = '', res = response ) => {
 };
 
 
-const buscarFacultades = async ( termino = '', res = response ) => {
+const buscar_x_Categoria = async ( termino = '', res = response ) => {
     // Bucar por uui
     if( uuidValidate(termino) ) {
         // Bucar facultad
-        const facultad = await Facultades.findByPk(termino,{
+        const moda = await Productos.findByPk(termino,{
             include: {
-                model: Tipos_de_Facultades,
-                as: 'types',
-                attributes:['facultad']
+                model: Categorias,
+                as: 'product_x_category',
+                attributes:['nombre']
             }
         })
 
+        console.log(moda)
         return res.json({ 
-            results: (facultad) ? [facultad] : []
+            results: (moda) ? [moda] : []
+        })
+    }
+
+    //  Busqueda productos por categoria cuidandome de inyecciones sql
+    const results = await Productos.findAndCountAll({
+        include: [
+          {
+            model: Categorias,
+            as: 'product_x_category',
+            attributes: ['nombre'],
+            where: {
+              nombre: {
+                [Op.iLike]: `%${termino}%`
+              }
+            }
+          }
+        ]
+      });
+      
+    res.json({
+        results
+    });
+
+
+};
+
+// Buscar por nombre de productos
+const buscarProductos = async ( termino = '', res = response ) => {
+    // Bucar por uui
+    if( uuidValidate(termino) ) {
+        // Bucar facultad
+        const moda = await Productos.findByPk(termino,{
+            include: {
+                model: Categorias,
+                as: 'product_x_category',
+                attributes:['nombre']
+            }
+        })
+
+        console.log(moda)
+        return res.json({ 
+            results: (moda) ? [moda] : []
         })
     }
 
     // Buscar por nombre
-    const results =  await Facultades.findAndCountAll({     
-        include:[{
-            model: Tipos_de_Facultades,
-            as: 'types',
-            attributes:['facultad'],
-            where:{
-                [Op.or]:[
-                { facultad:{ [Op.iLike]: `%${termino}%` }},
-                ]
-            }
-        }]
-        });
+    const results =  await Productos.findAndCountAll({ 
+        where:{
+            [Op.or]:[
+                { nombre:{ [Op.iLike]: `%${termino}%` }},
+            ]
+        }
+    });
 
     res.json({
         results
@@ -113,7 +156,7 @@ const buscarFacultades = async ( termino = '', res = response ) => {
 
 };
 
-
+// Buscar para elegir la colección
 const buscar = async( req, res = response ) => {
 
     const { coleccion, termino } = req.params;
@@ -133,14 +176,24 @@ const buscar = async( req, res = response ) => {
         case 'usuarios':
             buscarUsuarios( termino, res );
         break;
-        case 'profesores':
+        case 'productos':
             buscarProductos( termino, res );
             
         break;
-        case 'facultades':
-            buscarFacultades( termino, res );
+        // Para que moda tengas más opciones de busqueda
+        case 'moda':
             
-        break; 
+            const terminosModa = ['moda', 'ropa', 'vestimenta', 'prendas'];
+            
+            if (terminosModa.includes(termino.toLowerCase())) {
+            buscar_x_Categoria( termino, res );
+            
+            } else {
+                res.status( 500 ).json({
+                    msg: `se le olvido Hacer esta busqueda`
+                });
+            }
+            break;
 
         default:
             res.status( 500 ).json({
@@ -153,5 +206,6 @@ const buscar = async( req, res = response ) => {
 module.exports = {
     buscar,
     buscarRoles,
-    buscarFacultades
+    buscar_x_Categoria,
+    buscarProductos
 };

@@ -42,8 +42,9 @@ const usuariosGet = async(req, res = response ) => {
 
 // post- creacion 
 const usuariosPost = async(req, res = response) => {
-        
-        // una forma de enviar todo {google, ...resto
+    
+        try {
+            // una forma de enviar todo {google, ...resto
         const { id_usuario, ...resto} = req.body;
 
         const rol = resto.rol;
@@ -76,6 +77,12 @@ const usuariosPost = async(req, res = response) => {
             usuario,
             
         });
+            
+        } catch (error) {
+            if(error instanceof Error){
+                return res.status(500).json({ message: error.message });
+            }
+        }   
 
 }
 
@@ -126,7 +133,7 @@ const usuariosDelete = async(req, res) => {
         const { id_usuario } = req.params;
     
         // borrar fisicamente
-        await Usuarios.destroy({where: { id_usuario }}, { truncate: true });
+        await Usuarios.destroy({where: { id_usuario }});
     
         // const usuarioAutenticado = req.usuario;
         

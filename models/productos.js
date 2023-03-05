@@ -28,6 +28,13 @@ const Productos = db.define ( 'productos', {
         type: DataTypes.BOOLEAN, 
         unique: true, //correo unico
     },
+    id_categoria:{
+        type: DataTypes.UUID,
+        references: {
+            model: 'categorias',
+            key: 'id_categoria'
+        },
+    },
     },{timestamps: false},    
 );
 

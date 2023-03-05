@@ -10,7 +10,7 @@ cloudinary.config( process.env.CLOUDINARY_URL);
 const { response } = require('express');
 const { subirArchivo } = require('../helpers');
 // Import Models
-const { Usuarios, Alumnos } = require('../models');
+const { Usuarios, Alumnos, Categorias, Productos } = require('../models');
 const { col } = require('sequelize');
 
 
@@ -109,11 +109,51 @@ const actualizarImagenCloudinary = async( req, res ) => {
 
         break;
 
-    case 'alumnos': 
-        modelo = await Alumnos.findByPk(id);
+    case 'moda': 
+        modelo = await Productos.findByPk(id);
     if( !modelo ) {
             return res.status( 400 ).json({ 
-                msg: `No se encontro Alumno con ese Id ${ id }`
+                msg: `No se encontro moda con ese Id ${ id }`
+            });
+        }
+        
+        break;
+    
+    case 'computacion': 
+        modelo = await Productos.findByPk(id);
+    if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro moda con ese Id ${ id }`
+            });
+        }
+        
+        break;
+
+    case 'cpu': 
+        modelo = await Productos.findByPk(id);
+    if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro moda con ese Id ${ id }`
+            });
+        }
+        
+        break;
+
+    case 'hombre': 
+        modelo = await Productos.findByPk(id);
+    if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro hombre con ese Id ${ id }`
+            });
+        }
+        
+        break;
+
+    case 'mujer': 
+        modelo = await Productos.findByPk(id);
+    if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro mujer con ese Id ${ id }`
             });
         }
         
@@ -168,12 +208,22 @@ const mostrarImagen = async ( req, res ) => {
         }
 
         break;
-
-    case 'alumnos': 
-        modelo = await Alumnos.findByPk(id);
+    
+    case 'moda': 
+        modelo = await Categorias.findByPk(id);
     if( !modelo ) {
             return res.status( 400 ).json({ 
-                msg: `No se encontro Alumno con ese Id ${ id }`
+                msg: `No se encontro moda con ese Id ${ id }`
+            });
+        }
+        
+    break;
+    
+    case 'computacion': 
+        modelo = await Categorias.findByPk(id);
+    if( !modelo ) {
+            return res.status( 400 ).json({ 
+                msg: `No se encontro moda con ese Id ${ id }`
             });
         }
         

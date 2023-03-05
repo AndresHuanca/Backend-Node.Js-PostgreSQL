@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 // const sequelize = new Sequelize('sqlite::memory:');
 
 const { db } = require('../database/config');
+const Usuarios = require('./usuarios');
 
 // Modelo de Uusuario
 const Compras = db.define ( 'compras', { 
@@ -36,6 +37,7 @@ const Compras = db.define ( 'compras', {
     },
 },{timestamps: false}
 );
+
 
 // sobreescribir funcion toJSON para no enviar el password- codusuario-id_rol
 Compras.prototype.toJSON = function () {

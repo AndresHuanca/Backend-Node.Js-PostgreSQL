@@ -48,3 +48,4 @@ Carritos.belongsToMany(Usuarios, { through: "cart_x_users" , foreignKey:'id_carr
 Categorias.hasMany( Productos, {as:'category_x_product', foreignKey:'id_categoria'});
 
 Productos.belongsTo( Categorias, {as: 'product_x_category', foreignKey:'id_categoria'} );
+
