@@ -49,3 +49,7 @@ Categorias.hasMany( Productos, {as:'category_x_product', foreignKey:'id_categori
 
 Productos.belongsTo( Categorias, {as: 'product_x_category', foreignKey:'id_categoria'} );
 
+// CATEGORIAS------CATEGORIAS 
+Categorias.hasMany(Categorias, { as: 'categorias_hijas', foreignKey: 'id_categoria_padre' });
+Categorias.belongsTo(Categorias, { as: 'categoria_padre', foreignKey: 'id_categoria_padre' });
+

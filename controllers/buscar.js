@@ -20,7 +20,10 @@ const coleccionesPermitidas = [
     'ropa',
     'calzado',
     'hombre',
-    'mujer'
+    'mujer',
+    'productocategoria01',
+    'productocategoria02',
+    'general'
 ];
 
 const buscarRoles = async ( termino = '', res = response ) => {
@@ -106,18 +109,179 @@ const buscar_x_Categoria = async ( termino = '', res = response ) => {
             model: Categorias,
             as: 'product_x_category',
             attributes: ['nombre'],
-            where: {
+            include: [
+              {
+                model: Categorias,
+                as: 'categoria_padre',
+                attributes: ['nombre']
+              }
+            ]
+          }
+        ],
+        where: {
+          [Op.or]: [
+            {
               nombre: {
                 [Op.iLike]: `%${termino}%`
               }
+            },
+            {
+              descripcion: {
+                [Op.iLike]: `%${termino}%`
+              }
+            },
+            {
+              '$product_x_category.categoria_padre.nombre$': {
+                [Op.iLike]: `%${termino}%`
+              }
+            },
+            {
+              '$product_x_category.nombre$': {
+                [Op.iLike]: `%${termino}%`
+              }
             }
-          }
-        ]
-      });
-      
-    res.json({
+          ]
+        }
+      });    
+
+      res.json({
         results
     });
+      
+
+
+};
+
+//  Busqueda productos por categoria cuidandome de inyecciones sql
+const buscar_x_ProductoGeneral = async ( termino = '', res = response ) => {
+    const results = await Productos.findAndCountAll({
+        include: [
+          {
+            model: Categorias,
+            as: 'product_x_category',
+            attributes: ['nombre'],
+            include: [
+              {
+                model: Categorias,
+                as: 'categoria_padre',
+                attributes: ['nombre'],
+              },
+            ],
+          },
+        ],
+        where: {
+          [Op.or]: [
+            {
+              nombre: {
+                [Op.iLike]: `%${termino}%`,
+              },
+            },
+            {
+              descripcion: {
+                [Op.iLike]: `%${termino}%`,
+              },
+            },
+            {
+              '$product_x_category.categoria_padre.nombre$': {
+                [Op.iLike]: `%${termino}%`,
+              },
+            },
+            {
+              '$product_x_category.nombre$': {
+                [Op.iLike]: `%${termino}%`,
+              },
+            },
+          ],
+        },
+      });
+      
+      
+
+      res.json({
+        results
+    });
+      
+
+
+};
+// bucar solo en moda
+const buscar_x_Producto_x_CategoriaModa = async ( termino = '', res = response ) => {
+
+    const results = await Productos.findAndCountAll({
+        include: {
+          model: Categorias,
+          as: 'product_x_category',
+          attributes: [],
+          where: {
+            [Op.or]: [
+              { nombre: 'HOMBRE' },
+              { nombre: 'MUJER' }
+            ]
+          },
+          include: [
+            {
+              model: Categorias,
+              as: 'categoria_padre',
+              attributes: [],
+              where: { nombre: 'MODA' },
+              hierarchy: true,
+            },
+          ],
+        },
+        where: {
+          [Op.or]: [
+            { nombre: { [Op.iLike]: `%${termino}%` } },
+            { descripcion: { [Op.iLike]: `%${termino}%` } },
+          ],
+        },
+      });
+      
+    
+      res.json({
+        results
+    });
+      
+
+
+};
+
+// buscar solo en computacion
+const buscar_x_Producto_x_CategoriaCompu = async ( termino = '', res = response ) => {
+
+    const results = await Productos.findAndCountAll({
+        include: {
+          model: Categorias,
+          as: 'product_x_category',
+          attributes: [],
+          where: {
+            [Op.or]: [
+              { nombre: 'CPU' },
+              { nombre: 'MONITOR' }
+            ]
+          },
+          include: [
+            {
+              model: Categorias,
+              as: 'categoria_padre',
+              attributes: [],
+              where: { nombre: 'COMPUTACION' },
+              hierarchy: true,
+            },
+          ],
+        },
+        where: {
+          [Op.or]: [
+            { nombre: { [Op.iLike]: `%${termino}%` } },
+            { descripcion: { [Op.iLike]: `%${termino}%` } },
+          ],
+        },
+      });
+      
+    
+      res.json({
+        results
+    });
+      
 
 
 };
@@ -204,21 +368,34 @@ const buscar = async( req, res = response ) => {
             mostrarProductos( termino, res );
             
         break;
-        // Para que moda tengas más opciones de busqueda
+        // Para buscar por categoria dentro de moda/hombre-mujer
         case 'moda':
-            
-            const terminosModa = ['moda', 'ropa', 'vestimenta', 'prendas'];
-            
-            if (terminosModa.includes(termino.toLowerCase())) {
-            buscar_x_Categoria( termino, res );
-            
-            } else {
-                res.status( 500 ).json({
-                    msg: `se le olvido Hacer esta busqueda`
-                });
-            }
-            break;
 
+            buscar_x_Categoria( termino, res );
+    
+        break;
+        case 'computacion':
+
+            buscar_x_Categoria( termino, res );
+
+        break;
+        case 'productocategoria01':
+
+            buscar_x_Producto_x_CategoriaModa( termino, res );
+
+        break;
+        case 'productocategoria02':
+
+            buscar_x_Producto_x_CategoriaCompu( termino, res );
+
+        break;
+        // para buscar de forma general por categoria o nombre de producto
+        case 'general':
+
+            buscar_x_ProductoGeneral( termino, res );
+
+        break;   
+            
         default:
             res.status( 500 ).json({
                 msg: `se le olvido Hacer esta busqueda`
@@ -232,5 +409,8 @@ module.exports = {
     buscarRoles,
     buscar_x_Categoria,
     buscarProductos,
-    mostrarProductos
+    mostrarProductos,
+    buscar_x_Producto_x_CategoriaCompu,
+    buscar_x_Producto_x_CategoriaModa,
+    buscar_x_ProductoGeneral
 };

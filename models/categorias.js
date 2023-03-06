@@ -18,6 +18,10 @@ const Categorias = db.define ( 'categorias', {
     estado: { 
         type: DataTypes.BOOLEAN, 
     },
+    id_categoria_padre: {
+        type: DataTypes.UUID,
+      
+      },
 },{timestamps: false}
 );
 
