@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 // const sequelize = new Sequelize('sqlite::memory:');
 
 const { db } = require('../database/config');
-const Compras = require('./compras');
+const Carritos = require('./carritos');
 
 // Modelo de Uusuario
 const Usuarios = db.define ( 'usuarios', { 
@@ -42,9 +42,6 @@ const Usuarios = db.define ( 'usuarios', {
 }, {timestamps: false}
 );
 
-// Pare eliminar tablas relacioadas
-Compras.belongsTo(Usuarios, { onDelete: 'CASCADE' });
-Usuarios.hasMany(Compras, { onDelete: 'CASCADE' });
 
 // sobreescribir funcion toJSON para no enviar el password- codusuario-id_rol
 Usuarios.prototype.toJSON = function () {

@@ -1,5 +1,6 @@
 const { Router } = require('express');
 
+//importando para la validacion
 const { check } = require('express-validator');
 
 // Middlewares
@@ -7,31 +8,29 @@ const { validarJWT,
         validarCampos } = require('../middlewares');
 
 // import controllers
-const { pro_x_facPut,
-        pro_x_facDelete,
-        notasPost, 
-        notasGet,
-        notasPut,
-        notasDelete,
-        carritoGet,
-        carritoPut} = require('../controllers');
+const { 
+        carritoGet, carritoAllGet, carritoOneGet,
+        } = require('../controllers');
+const validarMuchaSolicitudes = require('../middlewares/muchas-solicitudes');
 
-const { existeProfesor_x_facultadPorId, 
-        existeAlumnoPorId,
-        existeCursoPorId,
-        existeNotaPorId} = require('../helpers');
 
 const router = Router();
 
-// GET
-router.get( '/', carritoGet );
 
-// PUT
-router.put( '/:id_nota', [
-    validarJWT,
-    check( 'id_nota' ).custom( existeNotaPorId ),
-    validarCampos
-], carritoPut );
+// GET car by user
+router.get( '/one/:id_usuario', [
+        // validarJWT,
+        check( 'id_usuario', 'No es un Id Valido' ).isUUID(),
+        validarMuchaSolicitudes,
+        validarCampos,
+], carritoOneGet )
+
+// GET data car by user
+router.get( '/get/:id_usuario', [
+        // validarJWT,
+        check( 'id_usuario', 'No es un Id Valido' ).isUUID(),
+        validarCampos,
+], carritoGet );
 
 
 module.exports = router;

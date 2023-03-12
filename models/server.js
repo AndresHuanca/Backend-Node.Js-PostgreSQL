@@ -20,8 +20,8 @@ class Server {
             buscar:                     '/api/buscar',
             categorias:                  '/api/categorias',
             // profesores:             '/api/profesores',
-            // profesores_x_facultades:'/api/profesores_x_facultades',
-            uploads:                    '/api/uploads',
+            productos_x_carritos:         '/api/productos_x_carritos',
+            uploads:                     '/api/uploads',
         };
 
         // Conectar a base de datos
@@ -70,7 +70,7 @@ class Server {
         this.app.use(  this.paths.compras,                 require('../routes/compras') );
         this.app.use(  this.paths.carritos,                require('../routes/carritos') );
         // this.app.use(  this.paths.profesores,              require('../routes/profesores') );
-        // this.app.use(  this.paths.profesores_x_facultades, require('../routes/profesores_x_facultades') );
+        this.app.use(  this.paths.productos_x_carritos,     require('../routes/productos_x_carritos') );
         this.app.use(  this.paths.usuarios,                require('../routes/usuarios') );
         this.app.use(  this.paths.uploads,                 require('../routes/uploads') );
 

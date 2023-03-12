@@ -8,7 +8,7 @@ const Compras = require('./compras');
 const Asociaciones = require('./asociaciones');
 // const Tipos_de_Facultades = require('./tipos_de_facultades');
 const Profesores = require('./profesores');
-// const Profesores_x_Facultades = require('./profesores_x_facultades');
+const Productos_x_Carritos = require('./productos_x_carritos');
 const Carritos = require('./carritos');
 const Categorias = require('./categorias');
 
@@ -23,7 +23,7 @@ module.exports = {
     Productos,
     Asociaciones,
     // Tipos_de_Facultades,
-    // Profesores_x_Facultades,
+    Productos_x_Carritos,
     Profesores,
     Categorias,
     

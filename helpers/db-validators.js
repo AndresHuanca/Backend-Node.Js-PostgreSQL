@@ -1,8 +1,7 @@
 
 //importando modelo usuario //importando modelo categoria
-const { Usuarios, Roles, Notas, Compras, Productos, Categorias } = require('../models');
+const { Usuarios, Roles, Notas, Compras, Productos, Categorias, Carritos, Productos_x_Carrito, Productos_x_Carritos } = require('../models');
 const Profesores = require('../models/profesores');
-const Profesores_x_Facultades = require('../models/profesores_x_facultades');
 
 // ----------------------USUARIOS-----------------------------
 // Validad existencia del id usuario
@@ -121,17 +120,6 @@ const esCategoriaValido = async(nombre='') => {
 
 // }
 
-// -----------------------------PROFESORES----------------------------
-// Validación de existencia de Profesor por Id
-const existeProfesorPorId = async ( id_profesor = '' ) => { 
-    // verifficar si el id existe
-    existeProfesor = await Profesores.findByPk(id_profesor);
-    if( !existeProfesor ) {
-        throw new Error( `El id ${ id_profesor } no existe en DB`)
-        
-    }
-};
-
 // -----------------------------PRODUCTOS----------------------------
 // Verifica si existe 
 const existeProductoPorId = async ( id_producto = '' ) => { 
@@ -143,12 +131,24 @@ const existeProductoPorId = async ( id_producto = '' ) => {
     }
 };
 
-// Validación de existencia de Profesor_x_Facultad por Id
-const existeProfesor_x_facultadPorId = async ( id_profesor_x_facultad = '' ) => { 
+// -----------------------------CARRITO----------------------------
+// Verifica si existe 
+const existeCarritoPorId = async ( id_carrito = '' ) => { 
     // verifficar si el id existe
-    existeProfesor_x_Facultades = await Profesores_x_Facultades.findByPk(id_profesor_x_facultad);
-    if( !existeProfesor_x_Facultades ) {
-        throw new Error( `El id ${ id_profesor_x_facultad } no existe en DB`)
+    existeCarrito = await Carritos.findByPk(id_carrito);
+    if( !existeCarrito ) {
+        throw new Error( `El id ${ id_carrito } carrito no existe en DB`)
+        
+    }
+};
+//----------------------------------------------------------------------------
+
+// Validación de existencia de Profesor_x_Facultad por Id
+const existeProducto_x_CarritoPorId = async ( id_producto_x_carrito = '' ) => { 
+    // verifficar si el id existe
+    existeProducCarrito = await Productos_x_Carritos.findByPk(id_producto_x_carrito);
+    if( !existeProducCarrito ) {
+        throw new Error( `El id ${ id_producto_x_carrito } no existe en DB`)
         
     }
 };
@@ -194,17 +194,12 @@ module.exports = {
     esRoleValido,
     emailExiste,
     existeUsuarioPorId,
-    // nombreCategoriaExiste,
-    // esCompraValido,
     existeCompraPorId,
     esCategoriaValido,
     existeProductoPorId,
-    // productoExiste,
-    existeProfesorPorId,
+    existeCarritoPorId,
     existeCategoriaPorId,
-    existeProfesor_x_facultadPorId,
-    // existeCursoPorId,
-    // existeNotaPorId,
+    existeProducto_x_CarritoPorId,
     coleccionesPermitidas,
     idExiste,
     emailNoExiste

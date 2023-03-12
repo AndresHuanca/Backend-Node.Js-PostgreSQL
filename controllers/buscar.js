@@ -404,6 +404,7 @@ const buscar = async( req, res = response ) => {
 
 };
 
+
 module.exports = {
     buscar,
     buscarRoles,

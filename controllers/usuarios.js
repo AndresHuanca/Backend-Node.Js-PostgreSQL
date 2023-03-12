@@ -4,9 +4,9 @@ const { response, request } = require('express');
 const Usuarios = require('../models/usuarios');
 const Roles = require('../models/roles');
 
-
 //importando para la encriptacion
 const bcryptjs = require('bcryptjs');
+const { Carritos } = require('../models');
 
 //get 01
 const usuariosGet = async(req, res = response ) => {
@@ -43,8 +43,8 @@ const usuariosGet = async(req, res = response ) => {
 // post- creacion 
 const usuariosPost = async(req, res = response) => {
     
-        try {
-            // una forma de enviar todo {google, ...resto
+        let total = 0;    
+        // una forma de enviar todo {google, ...resto
         const { id_usuario, ...resto} = req.body;
 
         const rol = resto.rol;
@@ -72,17 +72,26 @@ const usuariosPost = async(req, res = response) => {
     
         //guardar en DB
         await usuario.save();
+
+        //Post Carrito
+        const carNew = {
+            total,
+            id_usuario : usuario.dataValues.id_usuario,
+        }
+
+        //creando instancia de carrito
+        const carrito = new Carritos( carNew );
+
+        //guardar en DB
+        await carrito.save();
+
+        //Post Carrito End
+
         //show user create
         res.json({
             usuario,
-            
-        });
-            
-        } catch (error) {
-            if(error instanceof Error){
-                return res.status(500).json({ message: error.message });
-            }
-        }   
+            carrito
+        });  
 
 }
 
@@ -130,29 +139,35 @@ const usuariosPut = async(req = request, res = response) => {
 //delete
 const usuariosDelete = async(req, res) => {
   
-        const { id_usuario } = req.params;
+    const { id_usuario } = req.params;
     
-        // borrar fisicamente
-        await Usuarios.destroy({where: { id_usuario }});
-    
-        // const usuarioAutenticado = req.usuario;
-        
-        res.json({
-            msg: `El usuario de id ${id_usuario} eliminado`,
-            // usuarioAutenticado
-        });
+    // Elimina todos los registros de la tabla "carritos" que están relacionados con el usuario con id 1
+    Carritos.destroy({ where: { id_usuario } })
+        .then(() => {
+            // Ahora puedes eliminar el usuario con id 1
+            return Usuarios.destroy({ where: { id_usuario } })
+    })
+    .then(() => {
+        console.log('El usuario y sus carritos relacionados han sido eliminados')
+    })
+    .catch((error) => {
+        console.error('Error al eliminar el usuario y sus carritos relacionados', error)
+    });
+
+    res.json({
+        msg: `El usuario de id ${id_usuario} eliminado`,
+    });
 
 };
 
 //patch - Actualizar -parcialmente
 const usuariosPatch = async(req = request, res = response) => {
     
-    //para dinamico
     const { id_usuario } = req.params;
-    //desustructurar (estado no se puede cambiar)
+
     const { nombre, apellido, correo } = req.body;
     
-    existeEmail = await Usuarios.findOne( { where: {id_usuario} });
+    await Usuarios.findOne( { where: {id_usuario} });
 
     // Localizo usuario por Id
     await Usuarios.update( {nombre, apellido, correo}, { where: { id_usuario } });

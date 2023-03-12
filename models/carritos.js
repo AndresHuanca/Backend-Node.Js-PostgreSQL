@@ -9,8 +9,18 @@ const Carritos = db.define('carritos', {
         autoIncrement: true,
     },
     total: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.FLOAT,
     },
-},{ timestamp: false});
+    id_usuario:{
+        type: DataTypes.UUID,
+        references: {
+            model: 'usuarios',
+            key: 'id_usuario'
+        },
+    },
+},{
+    timestamps: false,
+  },
+);
 
 module.exports = Carritos;
