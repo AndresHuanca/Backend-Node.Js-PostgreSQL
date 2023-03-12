@@ -3,7 +3,7 @@ const { response } = require('express');
 const bcryptjs = require('bcryptjs'); 
 
 //para validar se utiliza imortar el modelo del usuario
-const {Usuarios, Roles} = require('../models');
+const {Usuarios, Roles, Carritos} = require('../models');
 // import de helpers
 const { generarJWT, googleVerify } = require('../helpers');
 
@@ -54,7 +54,7 @@ const login = async( req, res = response ) => {
 const googleSignIn = async(req, res = response) => {
 
     const { id_token } = req.body;
-
+    let total = 0;  
         // const googleUser = await googleVerify(id_token);
         // console.log(googleUser);
         const { nombre, apellido, img, correo, password } = await googleVerify(id_token);
@@ -84,6 +84,20 @@ const googleSignIn = async(req, res = response) => {
             usuario = new Usuarios(data);
             //guardar en DB
             await usuario.save();
+
+            //Post Carrito
+            const carNew = {
+                total,
+                id_usuario : usuario.id_usuario,
+            }
+
+            //creando instancia de carrito
+            const carrito = new Carritos( carNew );
+
+            //guardar en DB
+            await carrito.save();
+
+            //Post Carrito End
         }
 
         // Generar JWT
