@@ -23,21 +23,21 @@ Productos.belongsTo( Categorias, {as: 'product_x_category', foreignKey:'id_categ
 Categorias.hasMany( Categorias, { as: 'categorias_hijas', foreignKey: 'id_categoria_padre' });
 Categorias.belongsTo( Categorias, { as: 'categoria_padre', foreignKey: 'id_categoria_padre' });
 
+// Usuario 1 ............... 1 CARRITO
+Usuarios.hasOne(Carritos, { as:'car', foreignKey: 'id_usuario', onDelete: 'CASCADE' });
+Carritos.belongsTo(Usuarios, { as: 'user', foreignKey: 'id_usuario' });
+
 // NaN PRODUCTOS N.................... CARRITOS
 // otherKey asigna el fk especifico que se implementa en la DB
-Productos.belongsToMany( Carritos, { through: "productos_x_carritos" , foreignKey:'id_producto', otherKey: 'id_producto' });
+Productos.belongsToMany( Carritos, { through: "productos_x_carritos" , foreignKey:'id_producto', otherKey: 'id_producto',onDelete: 'CASCADE' });
 Carritos.belongsToMany( Productos, { through: "productos_x_carritos" , foreignKey:'id_carrito', otherKey: 'id_carrito'})
 
 // CARRITOS 1------N  PRODUCTOS_X_CARRITO
-Carritos.hasMany( Productos_x_Carritos, { as: 'cars', foreignKey: 'id_carrito' });
+Carritos.hasMany( Productos_x_Carritos, { as: 'cars', foreignKey: 'id_carrito', onDelete: 'CASCADE' });
 Productos_x_Carritos.belongsTo( Carritos, { as: 'productsCars', foreignKey: 'id_carrito' });
 
-
 // PRODUCTOS 1------N  PRODUCTOS_X_CARRITO
-Productos.hasMany( Productos_x_Carritos, { as: 'products', foreignKey: 'id_producto' });
+Productos.hasMany( Productos_x_Carritos, { as: 'products', foreignKey: 'id_producto', onDelete: 'CASCADE' });
 Productos_x_Carritos.belongsTo( Productos, { as: 'productsProducts', foreignKey: 'id_producto' });
 
 
-// Usuario 1 ............... 1 CARRITO
-Usuarios.hasOne(Carritos, {  foreignKey: 'id_usuario' });
-Carritos.belongsTo(Usuarios, { foreignKey: 'id_usuario' });

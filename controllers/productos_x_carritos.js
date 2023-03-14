@@ -109,7 +109,7 @@ const pro_x_carPatch = async( req, res ) => {
     // Localizo usuario por Id
     await Productos_x_Carritos.update( updateProduct , { where: { id_producto_x_carrito } });
 
-    res.status(500).json({
+    res.status(200).json({
         updateProduct,
     });
 

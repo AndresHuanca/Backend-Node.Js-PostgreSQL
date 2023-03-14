@@ -6,7 +6,7 @@ const Roles = require('../models/roles');
 
 //importando para la encriptacion
 const bcryptjs = require('bcryptjs');
-const { Carritos } = require('../models');
+const { Carritos, Productos_x_Carritos } = require('../models');
 
 //get 01
 const usuariosGet = async(req, res = response ) => {
@@ -138,24 +138,39 @@ const usuariosPut = async(req = request, res = response) => {
 
 //delete
 const usuariosDelete = async(req, res) => {
-  
+    
     const { id_usuario } = req.params;
     
-    // Elimina todos los registros de la tabla "carritos" que están relacionados con el usuario con id 1
-    Carritos.destroy({ where: { id_usuario } })
-        .then(() => {
-            // Ahora puedes eliminar el usuario con id 1
-            return Usuarios.destroy({ where: { id_usuario } })
+    // get id_producto_x_carrito
+    const [id_proCar] = await Usuarios.findAll({
+        include:[{
+            model: Carritos,
+            as: 'car',
+            attributes:['id_carrito'],
+            include: [{
+                model: Productos_x_Carritos,
+                as: 'cars',
+                attributes:['id_producto_x_carrito']
+            }],
+            where: {id_usuario}
+        }]
     })
-    .then(() => {
-        console.log('El usuario y sus carritos relacionados han sido eliminados')
-    })
-    .catch((error) => {
-        console.error('Error al eliminar el usuario y sus carritos relacionados', error)
+
+    // Delete products the user 
+    id_proCar.car.cars.forEach( async(c) => {
+        const id_producto_x_carrito = c.id_producto_x_carrito;
+        await Productos_x_Carritos.destroy({ where: {id_producto_x_carrito} })
     });
 
+    // Delete car of user 
+    const id_carrito = id_proCar.car.id_carrito;
+    await Carritos.destroy({ where: {id_carrito} })
+
+    // Delete User
+    await Usuarios.destroy({ where: {id_usuario} });
+
     res.json({
-        msg: `El usuario de id ${id_usuario} eliminado`,
+        msg: `El usuario ${id_usuario} eliminado`
     });
 
 };
